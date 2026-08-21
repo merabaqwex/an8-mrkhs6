@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#111317">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-title" content="Min-Max">
+<title>Min-Max</title>
+<style>
+:root{
+  --bg:#111317; --card:#1b1f26; --card2:#232830; --line:#2e343d;
+  --ink:#ecebe6; --mute:#8d94a0; --amber:#f0b241; --green:#3fb66a; --red:#e0584f;
+  --input:#0d0f12;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;font-size:16px}
+body{padding-bottom:120px}
+h1,h2,h3,.disp{font-family:"Avenir Next Condensed","SF Pro Display",-apple-system,system-ui,sans-serif;font-weight:700;letter-spacing:.01em;margin:0}
+.top{position:sticky;top:0;z-index:5;background:rgba(17,19,23,.92);backdrop-filter:blur(10px);padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.top h1{font-size:24px;flex:1}
+.top .sub{font-size:12px;color:var(--mute);font-weight:400;display:block;font-family:-apple-system,system-ui}
+.ib{background:none;border:0;color:var(--ink);font-size:22px;padding:6px 8px;border-radius:8px}
+.ib:active{background:var(--card2)}
+main{padding:12px 14px}
+.weekh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 6px;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.weekh b{color:var(--ink);font-size:14px}
+.tag{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--card2);color:var(--amber);letter-spacing:.04em}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.row.done{border-color:rgba(63,182,106,.6);background:linear-gradient(90deg,rgba(63,182,106,.18),var(--card) 60%)}
+.row .chk{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;color:#0b0f0c}
+.row.done .chk{background:var(--green);border-color:var(--green)}
+.row .nm{flex:1}
+.row .nm .t{font-size:17px;font-weight:600}
+.row .nm .d{font-size:12px;color:var(--mute);margin-top:2px}
+.row .nm .d .ok{color:var(--green)}
+.row .arrow{color:var(--mute)}
+.stat{display:flex;gap:10px;margin:4px 0 6px}
+.stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat .n{font-size:22px;font-family:"Avenir Next Condensed",system-ui;font-weight:700}
+.stat .l{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.bar{height:4px;background:var(--card2);border-radius:2px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--green)}
+/* session */
+.banner{background:var(--card2);border-left:3px solid var(--amber);padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;color:var(--ink)}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.ex .num{font-size:11px;color:var(--mute);letter-spacing:.08em;text-transform:uppercase}
+select.exsel{width:100%;margin-top:4px;font-size:18px;font-weight:700;background:transparent;color:var(--ink);border:0;border-bottom:1px dashed var(--line);padding:4px 0;font-family:"Avenir Next Condensed",system-ui;appearance:none;-webkit-appearance:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{font-size:12px;background:var(--card2);padding:4px 8px;border-radius:6px;color:var(--mute)}
+.chip b{color:var(--ink);font-weight:600}
+.chip.tech{color:var(--amber);border:1px solid rgba(240,178,65,.4);background:transparent}
+.hint{font-size:13px;margin:6px 0;padding:8px 10px;border-radius:8px;background:var(--input);border:1px solid var(--line)}
+.hint .k{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
+.hint.s{border-color:rgba(240,178,65,.45)}
+.hint.s .v{color:var(--amber);font-weight:700;font-size:16px}
+.wu{display:flex;gap:6px;flex-wrap:wrap}
+.wu span{background:var(--card2);padding:4px 8px;border-radius:6px;font-size:13px}
+.wu span b{color:var(--amber)}
+.sets{margin-top:8px}
+.set{display:grid;grid-template-columns:52px 1fr 1fr 48px;gap:8px;align-items:center;margin-bottom:8px}
+.set .lab{font-size:12px;color:var(--mute)}
+.set .lab b{display:block;color:var(--ink);font-size:14px}
+input[type=number],input[type=date],input[type=text]{width:100%;background:var(--input);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 8px;font-size:17px;text-align:center;font-variant-numeric:tabular-nums}
+input:focus{outline:none;border-color:var(--amber)}
+.set .rir{font-size:12px;color:var(--mute);text-align:center}
+.set .rir b{display:block;color:var(--ink);font-size:15px}
+.exfoot{display:flex;gap:8px;margin-top:6px;align-items:center}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:600;color:var(--ink);background:var(--card2)}
+.btn.am{background:var(--amber);color:#1a1200}
+.btn.gr{background:var(--green);color:#06150b}
+.btn.rd{background:transparent;color:var(--red);border:1px solid var(--red)}
+.btn:active{filter:brightness(.85)}
+.btn.full{width:100%;padding:14px;font-size:17px}
+details summary{color:var(--mute);font-size:13px;cursor:pointer;list-style:none;padding:4px 0}
+details summary::-webkit-details-marker{display:none}
+details p{font-size:13px;margin:4px 0 0;color:var(--ink);line-height:1.4}
+.donebox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:6px}
+.donebox.on{border-color:var(--green)}
+.donebox label{font-size:12px;color:var(--mute);display:block;margin-bottom:6px}
+/* timer */
+#timer{position:fixed;left:0;right:0;bottom:0;z-index:9;background:#0b0d10;border-top:1px solid var(--line);padding:10px 16px calc(env(safe-area-inset-bottom) + 10px);display:none;align-items:center;gap:10px}
+#timer.on{display:flex}
+#timer .tm{font-family:"Avenir Next Condensed",system-ui;font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;min-width:110px;line-height:1}
+#timer .tm.fin{color:var(--green)}
+#timer .lbl{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+#timer .ring{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+#timer .ring i{display:block;height:100%;background:var(--amber);width:100%}
+#timer .ctl{display:flex;gap:6px}
+#timer .ctl button{background:var(--card2);color:var(--ink);border:0;border-radius:8px;width:44px;height:40px;font-size:15px;font-weight:600}
+/* settings */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;color:var(--mute);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.fld input{text-align:left}
+.days{display:flex;gap:6px}
+.days button{flex:1;padding:10px 0;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--mute);font-size:14px}
+.days button.on{background:var(--amber);color:#1a1200;border-color:var(--amber);font-weight:700}
+.sm{font-size:12px;color:var(--mute);line-height:1.4}
+.hid{display:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="timer">
+  <div><div class="lbl" id="tlbl">Dinlenme</div><div class="tm" id="tm">0:00</div></div>
+  <div class="ring"><i id="tring"></i></div>
+  <div class="ctl">
+    <button onclick="T.adj(-15)">−15</button>
+    <button onclick="T.adj(15)">+15</button>
+    <button onclick="T.toggle()" id="tpp">II</button>
+    <button onclick="T.stop()">✕</button>
+  </div>
+</div>
+<script>
+/* ============ PROGRAM ============ */
+// warm: Jeff's warm-up set range string; sets; range [lo,hi] or null(time); rirI=intro/deload weeks, rirN=normal; tech=block2 technique; rest seconds; type c=compound i=isolation
+const DAYS = [
+ {name:"Full Body", ex:[
+  {n:"Lying Leg Curl",a:["Seated Leg Curl","Nordic Ham Curl"],warm:"1-2",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
+  {n:"Squat (kendi seçimin)",a:["Hack Squat","Smith Machine Squat"],warm:"2-4",sets:2,r:[6,8],rirI:[3,2],rirN:[1,0],tech:null,rest:240,t:"c",note:"Back/Front Squat, Pendulum, Hack, Belt veya Smith olabilir. RIR 0 = son tekrarı denemeden bırak (güvenlik)."},
+  {n:"Barbell Incline Press",a:["Smith Machine Incline Press","DB Incline Press"],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"30–45° bench. Altta 1 sn dur, pec gerginliğini koru. RIR 0 = son tekrarı denemeden bırak."},
+  {n:"Incline DB Y-Raise",a:["Cable Y-Raise","Machine Lateral Raise"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"30° bench'e sırtını yasla, ağırlığı Y şeklinde yukarı-dışa kaldır."},
+  {n:"Pull-Up (Wide Grip)",a:["Lat Pulldown (Wide Grip)","1-Arm Cable Pulldown"],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
+  {n:"Standing Calf Raise",a:["Leg Press Calf Press","Donkey Calf Raise"],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur. Ayak bileğini ayak tabanı üzerinde ileri-geri yuvarla."},
+ ]},
+ {name:"Upper", ex:[
+  {n:"Close-Grip Lat Pulldown",a:["Close-Grip Pull-Up","1-Arm Cable Pulldown"],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"~15° geriye yaslan, dirsekleri aşağı çekerken kürek kemiklerini sık."},
+  {n:"Chest-Supported T-Bar Row",a:["Chest-Supported Machine Row","Chest-Supported DB Row"],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
+  {n:"Machine Shrug",a:["Barbell Shrug","Cable Shrug-In"],warm:"1-2",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
+  {n:"Machine Chest Press",a:["Smith Machine Bench Press","DB Bench Press"],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
+  {n:"High-Cable Lateral Raise",a:["DB Lateral Raise","Machine Lateral Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
+  {n:"1-Arm Reverse Pec Deck",a:["Lying Reverse DB Flye","Reverse Cable Crossover"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kolunla mümkün olan en büyük yarım daireyi çiz."},
+  {n:"Cable Crunch",a:["Weighted Crunch","Machine Crunch"],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
+ ]},
+ {name:"Lower", ex:[
+  {n:"Leg Extension",a:["Reverse Nordic","Sissy Squat"],warm:"1-2",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
+  {n:"Barbell RDL",a:["DB RDL","Seated Cable Deadlift"],warm:"2-3",sets:2,r:[6,8],rirI:[3,2],rirN:[2,1],tech:null,rest:150,t:"c",note:"Kalçayı geriye it, bar ayak ortası üzerinde. Omurga nötr, altta derin esneme."},
+  {n:"Machine Hip Thrust",a:["Barbell Hip Thrust","45° Hyperextension"],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Üstte kalçayı sert sık, inişi kontrol et."},
+  {n:"Leg Press",a:["Smith Machine Squat","Barbell Squat"],warm:"2-4",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:150,t:"c",note:"Ayaklar platformda aşağıda (quad). Bel yuvarlanmadan derine in. RIR 0 = son tekrarı denemeden bırak."},
+  {n:"Standing Calf Raise",a:["Leg Press Calf Press","Donkey Calf Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
+ ]},
+ {name:"Arms / Delts", ex:[
+  {n:"Bayesian Cable Curl",a:["Incline DB Curl","Standing DB Curl"],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"İstersen öne eğil. Negatifi kontrol et, altta derin esneme."},
+  {n:"Overhead Cable Triceps Ext.",a:["Overhead DB Triceps Ext.","Skull Crusher"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
+  {n:"Modified Zottman Curl",a:["DB Hammer Curl","Preacher Hammer Curl"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Çıkarken hammer, inerken avuç yukarı."},
+  {n:"Cable Triceps Kickback",a:["Seated Dip Machine","Close Grip Dip"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
+  {n:"DB Wrist Curl",a:["Cable Wrist Curl"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"DB Wrist Extension",a:["Cable Wrist Extension"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"Alternating DB Curl",a:["Barbell Curl","EZ-Bar Curl"],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Yavaş, kontrollü tekrarlar!"},
+  {n:"Machine Lateral Raise",a:["High-Cable Lateral Raise","DB Lateral Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Myo-reps",rest:90,t:"i",note:"Ağırlığı yan delt'i sıkarak hareket ettir."},
+  {n:"Dead Hang (opsiyonel)",a:[],warm:"0-1",sets:2,r:null,rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Her hafta birkaç saniye ekle. Tekrar yerine saniye gir."},
+ ]},
+];
+// warm-up set count as Baran decided
+const WCOUNT = {"0-1":1,"1-2":1,"2-3":2,"2-4":3,"3-4":3};
+// Jeff's percentage/rep table
+const WTABLE = {
+ 1:[[60,"6-10"]],
+ 2:[[50,"6-10"],[70,"4-6"]],
+ 3:[[45,"6-10"],[65,"4-6"],[85,"3-4"]],
+ 4:[[45,"6-10"],[60,"4-6"],[75,"3-5"],[85,"2-4"]],
+};
+const TECH_EXPL = {
+ "Lengthened Partials":"Tam ROM ile başarısız olunca esneme pozisyonunda kısmi tekrarlarla devam et.",
+ "2 Drop Set (~%25)":"Başarısız olunca ağırlığı ~%25 düşür, tekrar başarısızlığa git; bir kez daha tekrarla.",
+ "Myo-reps":"Başarısız olunca 5 sn dinlen + 2 tekrar; 2 tam tekrar yapamayana kadar döngüyü sürdür.",
+ "Static Hold 30 sn":"Başarısız olunca alt (esneme) pozisyonu tam gerginlikle 30 sn tut.",
+};
+
+/* ============ STATE ============ */
+const KEY="minmax_v1";
+const iso = d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const today = ()=>iso(new Date());
+let S = load();
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s) return s; }catch(e){}
+  return {cfg:{weeks:20,incC:5,incI:2.5,round:2.5},sess:{},view:{page:"home"}};
+}
+function save(){ const j=JSON.stringify(S); try{localStorage.setItem(KEY,j);}catch(e){} if(window.__onSave){ const f=window.__onSave; window.__onSave=null; f(j); } }
+window.__init=function(j){ try{ const s=JSON.parse(j); if(s&&s.cfg){ S=s; } }catch(e){} S.view={page:"home"}; render(); };
+
+function schedule(){
+  const n=Math.max(4,(S.cfg.weeks||20)*4), out=[];
+  for(let i=0;i<n;i++) out.push({i, day:i%4, week:Math.floor(i/4)+1, pw:Math.floor(i/4)%12+1});
+  return out;
+}
+const LAYOUT=`Jeff: Full Body ve Arms/Delts sonrası 1-2 gün dinlenme. Upper→Lower→Arms arka arkaya olabilir (ortak kas yok).
+Önerilen hafta (4 gün): Pzt Full Body · Sal dinlen · Çar Upper · Per Lower · Cum Arms/Delts · Cmt-Paz dinlen.
+Alternatif: Pzt Full Body · Çar Upper · Per Lower · Cmt Arms/Delts.
+Her iki düzende de aynı kas grubu en fazla 2-4 gün arayla tekrar çalışır. 3 günlük haftalarda sırayı bozmadan devam et, kalan antrenman sonraki haftaya kayar.`;
+const fmt = s=>{ const d=new Date(s+"T00:00:00"); return d.toLocaleDateString("tr-TR",{day:"numeric",month:"short",weekday:"short"}); };
+const isLight = w => w===1||w===7;
+const sessData = i => S.sess[i] || (S.sess[i]={done:false,doneDate:"",ex:{}});
+const exData = (i,j,E) => { const s=sessData(i); return s.ex[j] || (s.ex[j]={choice:E.n,sets:Array.from({length:E.sets},()=>({kg:"",reps:""}))}); };
+const roundTo = (x,q)=>Math.round(x/q)*q;
+
+// suggestion: look back for same slot with same chosen exercise and data
+function suggest(i,j,E,choice){
+  if(!E.r) return null;
+  const sched = schedule();
+  for(let k=i-1;k>=0;k--){
+    const sk=sched[k]; if(!sk || sk.day!==i%4) continue;
+    const d=S.sess[k]&&S.sess[k].ex[j]; if(!d || d.choice!==choice) continue;
+    const sets=d.sets.filter(s=>s.kg!==""&&s.reps!=="");
+    if(!sets.length) continue;
+    const kg=parseFloat(d.sets[0].kg); if(isNaN(kg)) continue;
+    const top = sets.length===d.sets.length && sets.every(s=>parseFloat(s.reps)>=E.r[1]);
+    const inc = E.t==="c"?S.cfg.incC:S.cfg.incI;
+    if(top) return {kg:kg+inc, why:`Geçen seans ${sets.map(s=>s.reps).join("/")} tekrar – üst sınıra ulaştın, +${inc} kg`, prev:kg, prevReps:sets.map(s=>s.reps).join("/")};
+    return {kg, why:`Geçen seans ${kg} kg × ${sets.map(s=>s.reps).join("/")} – aynı kiloyla ${E.r[1]} tekrarı hedefle`, prev:kg, prevReps:sets.map(s=>s.reps).join("/")};
+  }
+  return null;
+}
+function warmup(E,work){
+  const n=WCOUNT[E.warm]||1; if(!work||!E.r) return {n,list:[]};
+  return {n,list:WTABLE[n].map(([p,reps])=>({kg:roundTo(work*p/100,S.cfg.round),p,reps}))};
+}
+
+/* ============ RENDER ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function render(){
+  const p=S.view.page;
+  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): settings();
+  window.scrollTo(0,S.view.scroll||0);
+}
+function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
+
+function home(){
+  const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
+  const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
+  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
+  h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
+  <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
+  h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
+  let lastW=null;
+  for(const s of sched){
+    const key=s.week;
+    if(key!==lastW){ lastW=key; h+=`<div class="weekh"><span><b>Hafta ${s.week}</b></span>${s.pw===1?'<span class="tag">Intro · RIR yüksek</span>':s.pw===7?'<span class="tag">Deload · RIR yüksek</span>':s.pw>=8?'<span class="tag">Blok 2 · teknikler</span>':''}</div>`; }
+    const d=S.sess[s.i]||{};
+    h+=`<div class="row ${d.done?"done":""}" onclick="go('sess',${s.i})"><div class="chk">${d.done?"✓":""}</div><div class="nm"><div class="t">${esc(DAYS[s.day].name)}</div><div class="d">#${s.i+1}${d.doneDate?` · <span class="${d.done?"ok":""}">${fmt(d.doneDate)}</span>`:""}</div></div><div class="arrow">›</div></div>`;
+  }
+  return h+`</main>`;
+}
+
+function session(i){
+  const s=schedule()[i]; if(!s){S.view.page="home";return home();}
+  const D=DAYS[s.day], sd=sessData(i), light=isLight(s.pw), b2=s.pw>=8;
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}</span></h1></div><main>`;
+  if(light) h+=`<div class="banner">${s.pw===1?"Intro":"Deload"} haftası: RIR hedefleri daha yüksek, kiloyu zorlama. Kilo önerisi bu hafta bir önceki seansla aynı tutulur.</div>`;
+  if(b2) h+=`<div class="banner">Blok 2: amber etiketli egzersizlerde yoğunluk tekniği sadece <b>son çalışma setinden sonra</b> uygulanır.</div>`;
+  D.ex.forEach((E,j)=>{
+    const d=exData(i,j,E); const opts=[E.n,...E.a];
+    if(!opts.includes(d.choice)) opts.push(d.choice);
+    const rir=light?E.rirI:E.rirN;
+    const sug=suggest(i,j,E,d.choice);
+    const sugKg = sug ? (light?sug.prev:sug.kg) : null;
+    const work = d.sets[0].kg!==""?parseFloat(d.sets[0].kg):sugKg;
+    const wu=warmup(E,work);
+    h+=`<div class="ex"><div class="num">Egzersiz ${j+1}${d.choice!==E.n?" · alternatif":""}</div>
+    <select class="exsel" onchange="pick(${i},${j},this.value)">${opts.map(o=>`<option ${o===d.choice?"selected":""}>${esc(o)}</option>`).join("")}</select>
+    <div class="chips"><span class="chip">Isınma <b>${wu.n} set</b></span><span class="chip">Çalışma <b>${E.sets} set</b></span><span class="chip">Tekrar <b>${E.r?E.r.join("–"):"süre"}</b></span><span class="chip">Dinlenme <b>${E.rest/60} dk</b></span>${b2&&E.tech?`<span class="chip tech">${esc(E.tech)}</span>`:""}</div>`;
+    if(sug) h+=`<div class="hint s"><span class="k">Öneri${light?" (hafif hafta)":""}</span><span class="v">${sugKg} kg</span> <span style="color:var(--mute);font-size:12px"> · ${esc(light?`Geçen seans ${sug.prev} kg × ${sug.prevReps}`:sug.why)}</span></div>`;
+    else if(E.r) h+=`<div class="hint"><span class="k">Öneri</span>İlk seans – kiloyu kendin belirle, sonraki seansta öneri çıkar.</div>`;
+    if(wu.list.length) h+=`<div class="hint"><span class="k">Isınma (${work} kg üzerinden)</span><div class="wu">${wu.list.map((w,k)=>`<span>${k+1}: <b>${w.kg} kg</b> × ${w.reps}</span>`).join("")}</div></div>`;
+    else if(E.r) h+=`<div class="hint"><span class="k">Isınma</span>${wu.n} set – S1 kilosunu girince hesaplanır.</div>`;
+    h+=`<div class="sets">`;
+    d.sets.forEach((st,k)=>{
+      h+=`<div class="set"><div class="lab">Set<b>${k+1}</b></div><input type="number" inputmode="decimal" step="0.5" placeholder="${E.r?(sugKg??"kg"):"—"}" value="${esc(st.kg)}" onchange="setv(${i},${j},${k},'kg',this.value)">
+      <input type="number" inputmode="numeric" placeholder="${E.r?"tekrar":"sn"}" value="${esc(st.reps)}" onchange="setv(${i},${j},${k},'reps',this.value)"><div class="rir">RIR<b>${rir[k]??"–"}</b></div></div>`;
+    });
+    h+=`</div><div class="exfoot"><button class="btn am" onclick="T.start(${E.rest},'${esc(d.choice)}')">▶ Dinlen ${E.rest/60} dk</button><button class="btn" onclick="T.start(60,'${esc(d.choice)}')">1 dk</button></div>
+    <details><summary>Not ${b2&&E.tech?"· teknik":""}</summary><p>${esc(E.note)}</p>${b2&&E.tech?`<p style="color:var(--amber)">${esc(E.tech)}: ${esc(TECH_EXPL[E.tech]||"")}</p>`:""}</details></div>`;
+  });
+  h+=`<div class="donebox ${sd.done?"on":""}"><label>Antrenman tarihi (sen gir)</label><input type="date" value="${esc(sd.doneDate||"")}" onchange="sessData(${i}).doneDate=this.value;save()">
+  <div style="height:10px"></div><button class="btn full ${sd.done?"":"gr"}" onclick="toggleDone(${i})">${sd.done?"Tamamlandı ✓ (geri al)":"Antrenmanı tamamla"}</button></div></main>`;
+  return h;
+}
+
+function settings(){
+  const c=S.cfg; const dn=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Ayarlar</h1></div><main>
+  <div class="fld"><label>Kaç hafta listelensin</label><input type="number" value="${c.weeks}" onchange="cfg('weeks',Math.max(1,+this.value));render()">
+  <p class="sm">Her hafta 4 antrenman: Full Body → Upper → Lower → Arms/Delts. 12 haftadan sonra RIR/teknik düzeni baştan başlar (H13 = intro gibi), numaralar düz devam eder. Tarihleri antrenman günü kendin girersin.</p>
+  <p class="sm" style="white-space:pre-line">${esc(LAYOUT)}</p></div>
+  <div class="fld"><label>Kilo artışı – bileşik (kg)</label><input type="number" step="0.5" value="${c.incC}" onchange="cfg('incC',+this.value)"></div>
+  <div class="fld"><label>Kilo artışı – izolasyon (kg)</label><input type="number" step="0.5" value="${c.incI}" onchange="cfg('incI',+this.value)"></div>
+  <div class="fld"><label>Isınma kilolarını yuvarla (kg)</label><input type="number" step="0.5" value="${c.round}" onchange="cfg('round',+this.value)"></div>
+  <p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Hafif haftalarda (H1, H7) artış önerilmez. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
+  <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
+  <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();go('home')}">Her şeyi sıfırla</button></div>
+  </main>`;
+}
+
+/* ============ ACTIONS ============ */
+function pick(i,j,v){ exData(i,j,DAYS[i%4].ex[j]).choice=v; keep(); render(); }
+function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
+function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done&&!s.doneDate) s.doneDate=today(); save(); go('home'); }
+function cfg(k,v){ S.cfg[k]=v; save(); }
+function keep(){ S.view.scroll=window.scrollY; save(); }
+function exportJ(){ const b=new Blob([JSON.stringify(S)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="minmax-yedek.json"; a.click(); }
+function importJ(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); go('home'); }catch(e){ alert("Dosya okunamadı"); } }; r.readAsText(f); }
+
+/* ============ TIMER ============ */
+const T={left:0,total:0,iv:null,run:false,ac:null,
+ start(sec,lbl){ this.total=sec; this.left=sec; this.run=true; $("#tlbl").textContent=lbl||"Dinlenme"; $("#timer").classList.add("on"); $("#tm").classList.remove("fin"); this.tick(); clearInterval(this.iv); this.iv=setInterval(()=>this.tick(),1000); this.ac||(this.ac=new (window.AudioContext||window.webkitAudioContext)()); },
+ tick(){ if(this.run) this.left--; if(this.left<=0){ this.left=0; this.done(); } const m=Math.floor(this.left/60), s=this.left%60; $("#tm").textContent=`${m}:${s<10?"0":""}${s}`; $("#tring").style.width=(this.total?this.left/this.total*100:0)+"%"; },
+ adj(d){ this.left=Math.max(0,this.left+d); this.total=Math.max(this.total,this.left); this.tick(); },
+ toggle(){ this.run=!this.run; $("#tpp").textContent=this.run?"II":"▶"; },
+ stop(){ clearInterval(this.iv); $("#timer").classList.remove("on"); },
+ done(){ clearInterval(this.iv); $("#tm").classList.add("fin"); if(navigator.vibrate) navigator.vibrate([200,100,200]); this.beep(); setTimeout(()=>this.stop(),4000); },
+ beep(){ try{ const ac=this.ac; [0,.25,.5].forEach(t=>{ const o=ac.createOscillator(), g=ac.createGain(); o.frequency.value=880; o.connect(g); g.connect(ac.destination); g.gain.setValueAtTime(.3,ac.currentTime+t); g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t+.2); o.start(ac.currentTime+t); o.stop(ac.currentTime+t+.22); }); }catch(e){} }
+};
+render();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>
