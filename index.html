@@ -100,6 +100,11 @@ details p{font-size:13px;margin:4px 0 0;color:var(--ink);line-height:1.4}
 .days button.on{background:var(--amber);color:#1a1200;border-color:var(--amber);font-weight:700}
 .sm{font-size:12px;color:var(--mute);line-height:1.4}
 .hid{display:none}
+.cbs{display:flex;flex-direction:column;gap:8px}
+.cb{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px}
+.cb.on{border-color:var(--green)}
+.cb .sq{width:26px;height:26px;border-radius:7px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#06150b;font-weight:700;flex-shrink:0}
+.cb.on .sq{background:var(--green);border-color:var(--green)}
 </style>
 </head>
 <body>
@@ -224,7 +229,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function render(){
   const p=S.view.page;
-  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): settings();
+  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): p==="log"?logpage(): settings();
   window.scrollTo(0,S.view.scroll||0);
 }
 function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
@@ -232,7 +237,7 @@ function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
 function home(){
   const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
   const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
-  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
+  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('log')">▤</button><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
   h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
   <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
   h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
@@ -294,6 +299,30 @@ function settings(){
   <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();go('home')}">Her şeyi sıfırla</button></div>
   </main>`;
 }
+
+/* ============ GÜNLÜK ============ */
+const SUPS=[["kre","Kreatin"],["omg","Omega-3"],["mul","Multivitamin"],["pro","Protein"],["sit","Sitrulin Malat"]];
+function logpage(){
+  S.log=S.log||{}; const d=S.view.ld||today(); const e=S.log[d]||{kg:"",antr:false,kardiyo:false,sup:{}};
+  const box=(k,lbl,on,fn)=>`<label class="cb ${on?"on":""}" onclick="${fn}"><span class="sq">${on?"✓":""}</span>${lbl}</label>`;
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Günlük</h1></div><main>
+  <div class="fld"><label>Tarih</label><input type="date" value="${d}" onchange="S.view.ld=this.value;save();render()"></div>
+  <div class="fld"><label>Kilo (kg)</label><input type="number" inputmode="decimal" step="0.1" value="${esc(e.kg)}" onchange="logset('${d}','kg',this.value)"></div>
+  <div class="cbs">${box("antr","Antrenman yaptım",e.antr,`logset('${d}','antr',${!e.antr})`)}${box("kardiyo","Kardiyo yaptım",e.kardiyo,`logset('${d}','kardiyo',${!e.kardiyo})`)}</div>
+  <div class="fld" style="margin-top:12px"><label>Takviye</label><div class="cbs">${SUPS.map(([k,l])=>box(k,l,e.sup&&e.sup[k],`logsup('${d}','${k}')`)).join("")}</div></div>`;
+  const dates=Object.keys(S.log).sort().reverse();
+  // weekly average
+  const wk=dates.filter(x=>S.log[x].kg!=="").slice(0,7).map(x=>parseFloat(S.log[x].kg)).filter(x=>!isNaN(x));
+  if(wk.length) h+=`<div class="hint"><span class="k">Son ${wk.length} ölçümün ortalaması</span><b>${(wk.reduce((a,b)=>a+b,0)/wk.length).toFixed(1)} kg</b></div>`;
+  h+=`<div class="weekh"><span><b>Kayıtlar</b></span></div>`;
+  for(const x of dates){ const r=S.log[x]; const sup=SUPS.filter(([k])=>r.sup&&r.sup[k]).map(([k,l])=>l.split(" ")[0]).join(" · ");
+    h+=`<div class="row" onclick="S.view.ld='${x}';save();render()"><div class="nm"><div class="t">${fmt(x)} ${r.kg!==""?`· <span style="color:var(--amber)">${r.kg} kg</span>`:""}</div><div class="d">${r.antr?"🏋️ antrenman ":""}${r.kardiyo?"🏃 kardiyo ":""}${sup?"· "+sup:""}</div></div><div class="arrow">›</div></div>`; }
+  if(!dates.length) h+=`<p class="sm">Henüz kayıt yok.</p>`;
+  return h+`</main>`;
+}
+function logent(d){ S.log=S.log||{}; return S.log[d]||(S.log[d]={kg:"",antr:false,kardiyo:false,sup:{}}); }
+function logset(d,k,v){ logent(d)[k]=v; save(); render(); }
+function logsup(d,k){ const e=logent(d); e.sup=e.sup||{}; e.sup[k]=!e.sup[k]; save(); render(); }
 
 /* ============ ACTIONS ============ */
 function pick(i,j,v){ exData(i,j,DAYS[i%4].ex[j]).choice=v; keep(); render(); }
