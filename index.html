@@ -124,38 +124,38 @@ details p{font-size:13px;margin:4px 0 0;color:var(--ink);line-height:1.4}
 // warm: Jeff's warm-up set range string; sets; range [lo,hi] or null(time); rirI=intro/deload weeks, rirN=normal; tech=block2 technique; rest seconds; type c=compound i=isolation
 const DAYS = [
  {name:"Full Body", ex:[
-  {n:"Lying Leg Curl",a:["Seated Leg Curl","Nordic Ham Curl"],warm:"1-2",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
-  {n:"Squat (kendi seçimin)",a:["Hack Squat","Smith Machine Squat"],warm:"2-4",sets:2,r:[6,8],rirI:[3,2],rirN:[1,0],tech:null,rest:240,t:"c",note:"Back/Front Squat, Pendulum, Hack, Belt veya Smith olabilir. RIR 0 = son tekrarı denemeden bırak (güvenlik)."},
-  {n:"Barbell Incline Press",a:["Smith Machine Incline Press","DB Incline Press"],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"30–45° bench. Altta 1 sn dur, pec gerginliğini koru. RIR 0 = son tekrarı denemeden bırak."},
-  {n:"Incline DB Y-Raise",a:["Cable Y-Raise","Machine Lateral Raise"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"30° bench'e sırtını yasla, ağırlığı Y şeklinde yukarı-dışa kaldır."},
-  {n:"Pull-Up (Wide Grip)",a:["Lat Pulldown (Wide Grip)","1-Arm Cable Pulldown"],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
-  {n:"Standing Calf Raise",a:["Leg Press Calf Press","Donkey Calf Raise"],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur. Ayak bileğini ayak tabanı üzerinde ileri-geri yuvarla."},
+  {n:"Lying Leg Curl",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
+  {n:"Squat",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[3,2],rirN:[1,0],tech:null,rest:240,t:"c",note:"Back/Front Squat, Pendulum, Hack, Belt veya Smith olabilir. RIR 0 = son tekrarı denemeden bırak (güvenlik)."},
+  {n:"DB Incline Press",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"30–45° bench. Altta 1 sn dur, pec gerginliğini koru. RIR 0 = son tekrarı denemeden bırak."},
+  {n:"Incline DB Y-Raise",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"30° bench'e sırtını yasla, ağırlığı Y şeklinde yukarı-dışa kaldır."},
+  {n:"Lat Pulldown (Wide Grip)",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
+  {n:"Standing Calf Raise",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur. Ayak bileğini ayak tabanı üzerinde ileri-geri yuvarla."},
  ]},
  {name:"Upper", ex:[
-  {n:"Close-Grip Lat Pulldown",a:["Close-Grip Pull-Up","1-Arm Cable Pulldown"],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"~15° geriye yaslan, dirsekleri aşağı çekerken kürek kemiklerini sık."},
-  {n:"Chest-Supported T-Bar Row",a:["Chest-Supported Machine Row","Chest-Supported DB Row"],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
-  {n:"Machine Shrug",a:["Barbell Shrug","Cable Shrug-In"],warm:"1-2",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
-  {n:"Machine Chest Press",a:["Smith Machine Bench Press","DB Bench Press"],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
-  {n:"High-Cable Lateral Raise",a:["DB Lateral Raise","Machine Lateral Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
-  {n:"1-Arm Reverse Pec Deck",a:["Lying Reverse DB Flye","Reverse Cable Crossover"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kolunla mümkün olan en büyük yarım daireyi çiz."},
-  {n:"Cable Crunch",a:["Weighted Crunch","Machine Crunch"],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
+  {n:"Close-Grip Lat Pulldown",a:[],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"~15° geriye yaslan, dirsekleri aşağı çekerken kürek kemiklerini sık."},
+  {n:"Chest-Supported DB Row",a:[],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
+  {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
+  {n:"Machine Chest Press",a:[],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
+  {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
+  {n:"Lying Reverse DB Flye",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kolunla mümkün olan en büyük yarım daireyi çiz."},
+  {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
  ]},
  {name:"Lower", ex:[
-  {n:"Leg Extension",a:["Reverse Nordic","Sissy Squat"],warm:"1-2",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
-  {n:"Barbell RDL",a:["DB RDL","Seated Cable Deadlift"],warm:"2-3",sets:2,r:[6,8],rirI:[3,2],rirN:[2,1],tech:null,rest:150,t:"c",note:"Kalçayı geriye it, bar ayak ortası üzerinde. Omurga nötr, altta derin esneme."},
-  {n:"Machine Hip Thrust",a:["Barbell Hip Thrust","45° Hyperextension"],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Üstte kalçayı sert sık, inişi kontrol et."},
-  {n:"Leg Press",a:["Smith Machine Squat","Barbell Squat"],warm:"2-4",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:150,t:"c",note:"Ayaklar platformda aşağıda (quad). Bel yuvarlanmadan derine in. RIR 0 = son tekrarı denemeden bırak."},
-  {n:"Standing Calf Raise",a:["Leg Press Calf Press","Donkey Calf Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
+  {n:"Leg Extension",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
+  {n:"DB Romanian Deadlift",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[3,2],rirN:[2,1],tech:null,rest:150,t:"c",note:"Kalçayı geriye it, dumbbell'lar bacağa yakın. Omurga nötr, altta derin esneme."},
+  {n:"Machine Hip Thrust",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Üstte kalçayı sert sık, inişi kontrol et."},
+  {n:"Smith Machine Squat",a:[],warm:"2-4",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:150,t:"c",note:"Ayaklar hafif önde (quad). Bel yuvarlanmadan derine in. RIR 0 = son tekrarı denemeden bırak."},
+  {n:"Standing Calf Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
  ]},
  {name:"Arms / Delts", ex:[
-  {n:"Bayesian Cable Curl",a:["Incline DB Curl","Standing DB Curl"],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"İstersen öne eğil. Negatifi kontrol et, altta derin esneme."},
-  {n:"Overhead Cable Triceps Ext.",a:["Overhead DB Triceps Ext.","Skull Crusher"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
-  {n:"Modified Zottman Curl",a:["DB Hammer Curl","Preacher Hammer Curl"],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Çıkarken hammer, inerken avuç yukarı."},
-  {n:"Cable Triceps Kickback",a:["Seated Dip Machine","Close Grip Dip"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
-  {n:"DB Wrist Curl",a:["Cable Wrist Curl"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
-  {n:"DB Wrist Extension",a:["Cable Wrist Extension"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
-  {n:"Alternating DB Curl",a:["Barbell Curl","EZ-Bar Curl"],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Yavaş, kontrollü tekrarlar!"},
-  {n:"Machine Lateral Raise",a:["High-Cable Lateral Raise","DB Lateral Raise"],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Myo-reps",rest:90,t:"i",note:"Ağırlığı yan delt'i sıkarak hareket ettir."},
+  {n:"Incline DB Curl",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"İstersen öne eğil. Negatifi kontrol et, altta derin esneme."},
+  {n:"Overhead Cable Triceps Ext.",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
+  {n:"Modified Zottman Curl",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Çıkarken hammer, inerken avuç yukarı."},
+  {n:"Cable Triceps Kickback",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
+  {n:"DB Wrist Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"DB Wrist Extension",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"Alternating DB Curl",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Yavaş, kontrollü tekrarlar!"},
+  {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Myo-reps",rest:90,t:"i",note:"Ağırlığı yan delt'i sıkarak hareket ettir."},
   {n:"Dead Hang (opsiyonel)",a:[],warm:"0-1",sets:2,r:null,rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Her hafta birkaç saniye ekle. Tekrar yerine saniye gir."},
  ]},
 ];
@@ -199,16 +199,16 @@ Her iki düzende de aynı kas grubu en fazla 2-4 gün arayla tekrar çalışır.
 const fmt = s=>{ const d=new Date(s+"T00:00:00"); return d.toLocaleDateString("tr-TR",{day:"numeric",month:"short",weekday:"short"}); };
 const isLight = w => w===1||w===7;
 const sessData = i => S.sess[i] || (S.sess[i]={done:false,doneDate:"",ex:{}});
-const exData = (i,j,E) => { const s=sessData(i); return s.ex[j] || (s.ex[j]={choice:E.n,sets:Array.from({length:E.sets},()=>({kg:"",reps:""}))}); };
+const exData = (i,j,E) => { const s=sessData(i); return s.ex[j] || (s.ex[j]={sets:Array.from({length:E.sets},()=>({kg:"",reps:""}))}); };
 const roundTo = (x,q)=>Math.round(x/q)*q;
 
 // suggestion: look back for same slot with same chosen exercise and data
-function suggest(i,j,E,choice){
+function suggest(i,j,E){
   if(!E.r) return null;
   const sched = schedule();
   for(let k=i-1;k>=0;k--){
     const sk=sched[k]; if(!sk || sk.day!==i%4) continue;
-    const d=S.sess[k]&&S.sess[k].ex[j]; if(!d || d.choice!==choice) continue;
+    const d=S.sess[k]&&S.sess[k].ex[j]; if(!d) continue;
     const sets=d.sets.filter(s=>s.kg!==""&&s.reps!=="");
     if(!sets.length) continue;
     const kg=parseFloat(d.sets[0].kg); if(isNaN(kg)) continue;
@@ -258,15 +258,13 @@ function session(i){
   if(light) h+=`<div class="banner">${s.pw===1?"Intro":"Deload"} haftası: RIR hedefleri daha yüksek, kiloyu zorlama. Kilo önerisi bu hafta bir önceki seansla aynı tutulur.</div>`;
   if(b2) h+=`<div class="banner">Blok 2: amber etiketli egzersizlerde yoğunluk tekniği sadece <b>son çalışma setinden sonra</b> uygulanır.</div>`;
   D.ex.forEach((E,j)=>{
-    const d=exData(i,j,E); const opts=[E.n,...E.a];
-    if(!opts.includes(d.choice)) opts.push(d.choice);
+    const d=exData(i,j,E);
     const rir=light?E.rirI:E.rirN;
-    const sug=suggest(i,j,E,d.choice);
+    const sug=suggest(i,j,E);
     const sugKg = sug ? (light?sug.prev:sug.kg) : null;
     const work = d.sets[0].kg!==""?parseFloat(d.sets[0].kg):sugKg;
     const wu=warmup(E,work);
-    h+=`<div class="ex"><div class="num">Egzersiz ${j+1}${d.choice!==E.n?" · alternatif":""}</div>
-    <select class="exsel" onchange="pick(${i},${j},this.value)">${opts.map(o=>`<option ${o===d.choice?"selected":""}>${esc(o)}</option>`).join("")}</select>
+    h+=`<div class="ex"><div class="num">Egzersiz ${j+1}</div><h2 style="font-size:20px;margin:2px 0 4px">${esc(E.n)}</h2>
     <div class="chips"><span class="chip">Isınma <b>${wu.n} set</b></span><span class="chip">Çalışma <b>${E.sets} set</b></span><span class="chip">Tekrar <b>${E.r?E.r.join("–"):"süre"}</b></span><span class="chip">Dinlenme <b>${E.rest/60} dk</b></span>${b2&&E.tech?`<span class="chip tech">${esc(E.tech)}</span>`:""}</div>`;
     if(sug) h+=`<div class="hint s"><span class="k">Öneri${light?" (hafif hafta)":""}</span><span class="v">${sugKg} kg</span> <span style="color:var(--mute);font-size:12px"> · ${esc(light?`Geçen seans ${sug.prev} kg × ${sug.prevReps}`:sug.why)}</span></div>`;
     else if(E.r) h+=`<div class="hint"><span class="k">Öneri</span>İlk seans – kiloyu kendin belirle, sonraki seansta öneri çıkar.</div>`;
@@ -277,7 +275,7 @@ function session(i){
       h+=`<div class="set"><div class="lab">Set<b>${k+1}</b></div><input type="number" inputmode="decimal" step="0.5" placeholder="${E.r?(sugKg??"kg"):"—"}" value="${esc(st.kg)}" onchange="setv(${i},${j},${k},'kg',this.value)">
       <input type="number" inputmode="numeric" placeholder="${E.r?"tekrar":"sn"}" value="${esc(st.reps)}" onchange="setv(${i},${j},${k},'reps',this.value)"><div class="rir">RIR<b>${rir[k]??"–"}</b></div></div>`;
     });
-    h+=`</div><div class="exfoot"><button class="btn am" onclick="T.start(${E.rest},'${esc(d.choice)}')">▶ Dinlen ${E.rest/60} dk</button><button class="btn" onclick="T.start(60,'${esc(d.choice)}')">1 dk</button></div>
+    h+=`</div><div class="exfoot"><button class="btn am" onclick="T.start(${E.rest},'${esc(E.n)}')">▶ Dinlen ${E.rest/60} dk</button><button class="btn" onclick="T.start(60,'${esc(E.n)}')">1 dk</button></div>
     <details><summary>Not ${b2&&E.tech?"· teknik":""}</summary><p>${esc(E.note)}</p>${b2&&E.tech?`<p style="color:var(--amber)">${esc(E.tech)}: ${esc(TECH_EXPL[E.tech]||"")}</p>`:""}</details></div>`;
   });
   h+=`<div class="donebox ${sd.done?"on":""}"><label>Antrenman tarihi (sen gir)</label><input type="date" value="${esc(sd.doneDate||"")}" onchange="sessData(${i}).doneDate=this.value;save()">
@@ -294,14 +292,14 @@ function settings(){
   <div class="fld"><label>Kilo artışı – bileşik (kg)</label><input type="number" step="0.5" value="${c.incC}" onchange="cfg('incC',+this.value)"></div>
   <div class="fld"><label>Kilo artışı – izolasyon (kg)</label><input type="number" step="0.5" value="${c.incI}" onchange="cfg('incI',+this.value)"></div>
   <div class="fld"><label>Isınma kilolarını yuvarla (kg)</label><input type="number" step="0.5" value="${c.round}" onchange="cfg('round',+this.value)"></div>
-  <p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Hafif haftalarda (H1, H7) artış önerilmez. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
-  <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
+  <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Hafif haftalarda (H1, H7) artış önerilmez. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
+  <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="csvSess()">Antrenman CSV</button><button class="btn" onclick="csvLog()">Günlük CSV</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
   <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();go('home')}">Her şeyi sıfırla</button></div>
   </main>`;
 }
 
 /* ============ GÜNLÜK ============ */
-const SUPS=[["kre","Kreatin"],["omg","Omega-3"],["mul","Multivitamin"],["pro","Protein"],["sit","Sitrulin Malat"]];
+const SUPS=[["kre","Kreatin"],["omg","Omega-3"],["mul","Multivitamin"],["pro","Protein"],["sit","Sitrulin Malat"],["mag","Magnezyum"]];
 function logpage(){
   S.log=S.log||{}; const d=S.view.ld||today(); const e=S.log[d]||{kg:"",antr:false,kardiyo:false,sup:{}};
   const box=(k,lbl,on,fn)=>`<label class="cb ${on?"on":""}" onclick="${fn}"><span class="sq">${on?"✓":""}</span>${lbl}</label>`;
@@ -325,11 +323,17 @@ function logset(d,k,v){ logent(d)[k]=v; save(); render(); }
 function logsup(d,k){ const e=logent(d); e.sup=e.sup||{}; e.sup[k]=!e.sup[k]; save(); render(); }
 
 /* ============ ACTIONS ============ */
-function pick(i,j,v){ exData(i,j,DAYS[i%4].ex[j]).choice=v; keep(); render(); }
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
 function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done&&!s.doneDate) s.doneDate=today(); save(); go('home'); }
 function cfg(k,v){ S.cfg[k]=v; save(); }
 function keep(){ S.view.scroll=window.scrollY; save(); }
+function dl(name,txt,type){ const b=new Blob([txt],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
+function csvSess(){ const rows=[["Antrenman#","Hafta","Gün","Tarih","Tamamlandı","Egzersiz","Set","Kg","Tekrar/sn"]];
+  for(const s of schedule()){ const d=S.sess[s.i]; if(!d) continue; DAYS[s.day].ex.forEach((E,j)=>{ const e=d.ex[j]; if(!e) return; e.sets.forEach((st,k)=>{ if(st.kg===""&&st.reps==="") return; rows.push([s.i+1,s.week,DAYS[s.day].name,d.doneDate||"",d.done?"evet":"hayır",E.n,k+1,st.kg,st.reps]); }); }); }
+  dl("minmax-antrenman.csv","\ufeff"+rows.map(r=>r.join(";")).join("\n"),"text/csv"); }
+function csvLog(){ const rows=[["Tarih","Kilo","Antrenman","Kardiyo",...SUPS.map(x=>x[1])]];
+  for(const d of Object.keys(S.log||{}).sort()){ const e=S.log[d]; rows.push([d,e.kg,e.antr?1:0,e.kardiyo?1:0,...SUPS.map(([k])=>e.sup&&e.sup[k]?1:0)]); }
+  dl("minmax-gunluk.csv","\ufeff"+rows.map(r=>r.join(";")).join("\n"),"text/csv"); }
 function exportJ(){ const b=new Blob([JSON.stringify(S)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="minmax-yedek.json"; a.click(); }
 function importJ(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); go('home'); }catch(e){ alert("Dosya okunamadı"); } }; r.readAsText(f); }
 
