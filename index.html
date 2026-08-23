@@ -105,6 +105,15 @@ details p{font-size:13px;margin:4px 0 0;color:var(--ink);line-height:1.4}
 .cb.on{border-color:var(--green)}
 .cb .sq{width:26px;height:26px;border-radius:7px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#06150b;font-weight:700;flex-shrink:0}
 .cb.on .sq{background:var(--green);border-color:var(--green)}
+.mrow{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:14px}
+.mrow .l{color:var(--ink)}
+.mrow .v{color:var(--mute)}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tgrid div span{display:block;font-size:11px;color:var(--mute);margin-bottom:4px}
+table.rt{width:100%;border-collapse:collapse;font-size:12.5px}
+table.rt th{text-align:left;color:var(--mute);font-weight:600;padding:4px 4px 6px;border-bottom:1px solid var(--line)}
+table.rt td{padding:6px 4px;border-bottom:1px solid var(--line)}
+table.rt tr:last-child td{border-bottom:0}
 </style>
 </head>
 <body>
@@ -137,7 +146,7 @@ const DAYS = [
   {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
   {n:"Machine Chest Press",a:[],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
   {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
-  {n:"Lying Reverse DB Flye",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kolunla mümkün olan en büyük yarım daireyi çiz."},
+  {n:"Reverse Cable Crossover",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kabloları çaprazla (sağ el sol tarafa, sol el sağ tarafa), dirsekler hafif kilitli, arka deltoidi sıkarak dışa-geriye çek."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
  ]},
  {name:"Lower", ex:[
@@ -179,13 +188,25 @@ const TECH_EXPL = {
 const KEY="minmax_v1";
 const iso = d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const today = ()=>iso(new Date());
+function defaultTargets(){ return {train:{kcal:2550,protein:170,carb:300,fat:75},rest:{kcal:2350,protein:170,carb:250,fat:70}}; }
+function ensureCfg(){
+  S.cfg = S.cfg || {};
+  if(S.cfg.weeks==null) S.cfg.weeks=20;
+  if(S.cfg.incC==null) S.cfg.incC=5;
+  if(S.cfg.incI==null) S.cfg.incI=2.5;
+  if(S.cfg.round==null) S.cfg.round=2.5;
+  if(!S.cfg.targets) S.cfg.targets=defaultTargets();
+  if(!S.cfg.targets.train) S.cfg.targets.train=defaultTargets().train;
+  if(!S.cfg.targets.rest) S.cfg.targets.rest=defaultTargets().rest;
+}
 let S = load();
 function load(){
   try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s) return s; }catch(e){}
-  return {cfg:{weeks:20,incC:5,incI:2.5,round:2.5},sess:{},view:{page:"home"}};
+  return {cfg:{weeks:20,incC:5,incI:2.5,round:2.5,targets:defaultTargets()},sess:{},view:{page:"home"}};
 }
+ensureCfg();
 function save(){ const j=JSON.stringify(S); try{localStorage.setItem(KEY,j);}catch(e){} if(window.__onSave){ const f=window.__onSave; window.__onSave=null; f(j); } }
-window.__init=function(j){ try{ const s=JSON.parse(j); if(s&&s.cfg){ S=s; } }catch(e){} S.view={page:"home"}; render(); };
+window.__init=function(j){ try{ const s=JSON.parse(j); if(s&&s.cfg){ S=s; } }catch(e){} ensureCfg(); S.view={page:"home"}; render(); };
 
 function schedule(){
   const n=Math.max(4,(S.cfg.weeks||20)*4), out=[];
@@ -223,13 +244,25 @@ function warmup(E,work){
   const n=WCOUNT[E.warm]||1; if(!work||!E.r) return {n,list:[]};
   return {n,list:WTABLE[n].map(([p,reps])=>({kg:roundTo(work*p/100,S.cfg.round),p,reps}))};
 }
+// macro % → renk (kcal simetrik bant, protein/karb/yağ taban odaklı)
+function macroColor(key,pctv){
+  if(pctv==null) return "var(--mute)";
+  if(key==="kcal"){
+    if(pctv>=90&&pctv<=110) return "var(--green)";
+    if((pctv>=70&&pctv<90)||(pctv>110&&pctv<=130)) return "var(--amber)";
+    return "var(--red)";
+  }
+  if(pctv>=90) return "var(--green)";
+  if(pctv>=70) return "var(--amber)";
+  return "var(--red)";
+}
 
 /* ============ RENDER ============ */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function render(){
   const p=S.view.page;
-  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): p==="log"?logpage(): settings();
+  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): p==="log"?logpage(): p==="rules"?rules(): settings();
   window.scrollTo(0,S.view.scroll||0);
 }
 function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
@@ -237,7 +270,7 @@ function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
 function home(){
   const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
   const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
-  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('log')">▤</button><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
+  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('rules')">ⓘ</button><button class="ib" onclick="go('log')">▤</button><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
   h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
   <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
   h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
@@ -284,7 +317,7 @@ function session(i){
 }
 
 function settings(){
-  const c=S.cfg; const dn=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+  const c=S.cfg; 
   return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Ayarlar</h1></div><main>
   <div class="fld"><label>Kaç hafta listelensin</label><input type="number" value="${c.weeks}" onchange="cfg('weeks',Math.max(1,+this.value));render()">
   <p class="sm">Her hafta 4 antrenman: Full Body → Upper → Lower → Arms/Delts. 12 haftadan sonra RIR/teknik düzeni baştan başlar (H13 = intro gibi), numaralar düz devam eder. Tarihleri antrenman günü kendin girersin.</p>
@@ -293,49 +326,144 @@ function settings(){
   <div class="fld"><label>Kilo artışı – izolasyon (kg)</label><input type="number" step="0.5" value="${c.incI}" onchange="cfg('incI',+this.value)"></div>
   <div class="fld"><label>Isınma kilolarını yuvarla (kg)</label><input type="number" step="0.5" value="${c.round}" onchange="cfg('round',+this.value)"></div>
   <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Hafif haftalarda (H1, H7) artış önerilmez. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
+
+  <div class="weekh"><span><b>Beslenme Hedefleri</b></span></div>
+  <div class="fld"><label>Antrenman Günü</label>
+  <div class="tgrid">
+    <div><span>Kalori (kcal)</span><input type="number" value="${c.targets.train.kcal}" onchange="cfgT('train','kcal',+this.value)"></div>
+    <div><span>Protein (g)</span><input type="number" value="${c.targets.train.protein}" onchange="cfgT('train','protein',+this.value)"></div>
+    <div><span>Karbonhidrat (g)</span><input type="number" value="${c.targets.train.carb}" onchange="cfgT('train','carb',+this.value)"></div>
+    <div><span>Yağ (g)</span><input type="number" value="${c.targets.train.fat}" onchange="cfgT('train','fat',+this.value)"></div>
+  </div></div>
+  <div class="fld"><label>Dinlenme Günü</label>
+  <div class="tgrid">
+    <div><span>Kalori (kcal)</span><input type="number" value="${c.targets.rest.kcal}" onchange="cfgT('rest','kcal',+this.value)"></div>
+    <div><span>Protein (g)</span><input type="number" value="${c.targets.rest.protein}" onchange="cfgT('rest','protein',+this.value)"></div>
+    <div><span>Karbonhidrat (g)</span><input type="number" value="${c.targets.rest.carb}" onchange="cfgT('rest','carb',+this.value)"></div>
+    <div><span>Yağ (g)</span><input type="number" value="${c.targets.rest.fat}" onchange="cfgT('rest','fat',+this.value)"></div>
+  </div>
+  <p class="sm">Günlük sayfasındaki "Antrenman yaptım" kutusu o günün hangi hedef setine göre değerlendirileceğini belirler. Protein sabit tutulur, sadece karbonhidrat antrenman/dinlenme gününe göre değişir — yağ oranın netleşince (bel/fotoğraf ilerledikçe) bu hedefleri buradan güncelleyebilirsin.</p></div>
+
   <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="csvSess()">Antrenman CSV</button><button class="btn" onclick="csvLog()">Günlük CSV</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
-  <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();go('home')}">Her şeyi sıfırla</button></div>
+  <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();ensureCfg();go('home')}">Her şeyi sıfırla</button></div>
   </main>`;
 }
 
 /* ============ GÜNLÜK ============ */
 const SUPS=[["kre","Kreatin"],["omg","Omega-3"],["mul","Multivitamin"],["pro","Protein"],["sit","Sitrulin Malat"],["mag","Magnezyum"]];
+const MROWS=[["kcal","Kalori","",""],["protein","Protein","g",""],["carb","Karbonhidrat","g",""],["fat","Yağ","g",""]];
 function logpage(){
-  S.log=S.log||{}; const d=S.view.ld||today(); const e=S.log[d]||{kg:"",antr:false,kardiyo:false,sup:{}};
+  S.log=S.log||{}; const d=S.view.ld||today(); const e=logent(d);
   const box=(k,lbl,on,fn)=>`<label class="cb ${on?"on":""}" onclick="${fn}"><span class="sq">${on?"✓":""}</span>${lbl}</label>`;
-  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Günlük</h1></div><main>
+  const t = S.cfg.targets[e.antr?"train":"rest"];
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Günlük</h1><button class="ib" onclick="go('rules')">ⓘ</button></div><main>
   <div class="fld"><label>Tarih</label><input type="date" value="${d}" onchange="S.view.ld=this.value;save();render()"></div>
   <div class="fld"><label>Kilo (kg)</label><input type="number" inputmode="decimal" step="0.1" value="${esc(e.kg)}" onchange="logset('${d}','kg',this.value)"></div>
+  <div class="fld"><label>Bel ölçümü (cm)</label><input type="number" inputmode="decimal" step="0.5" value="${esc(e.waist)}" onchange="logset('${d}','waist',this.value)">
+  <p class="sm">Belinin en kalın olduğu noktadan ölç — bu göbek deliği olmak zorunda değil, senin için alt karın bölgesi olabilir. Tek kural: <b>her ay aynı noktadan</b> ölç. İlk ölçtüğünde o noktayı sabitle (ör. "göbek deliğinin 3-4 parmak altı" veya "kalça kemiğinin X cm üstü") ve her seferinde oradan ölç. Sabah aç karnına, ayakta, mezura yere paralel, karnını çekmeden, büyük nefes almadan ölç.</p></div>
   <div class="cbs">${box("antr","Antrenman yaptım",e.antr,`logset('${d}','antr',${!e.antr})`)}${box("kardiyo","Kardiyo yaptım",e.kardiyo,`logset('${d}','kardiyo',${!e.kardiyo})`)}</div>
-  <div class="fld" style="margin-top:12px"><label>Takviye</label><div class="cbs">${SUPS.map(([k,l])=>box(k,l,e.sup&&e.sup[k],`logsup('${d}','${k}')`)).join("")}</div></div>`;
+  <p class="sm" style="margin:6px 2px 0">"Antrenman yaptım" kutusu aynı zamanda aşağıdaki beslenme hedeflerinin antrenman mı dinlenme günü mü olduğunu belirler.</p>
+
+  <div class="weekh"><span><b>Beslenme</b></span><span class="tag">${e.antr?"Antrenman günü hedefi":"Dinlenme günü hedefi"}</span></div>
+  <div class="fld"><label>Kalori (kcal)</label><input type="number" inputmode="numeric" value="${esc(e.kcal)}" onchange="logset('${d}','kcal',this.value)"></div>
+  <div class="fld"><label>Protein (g)</label><input type="number" inputmode="numeric" value="${esc(e.protein)}" onchange="logset('${d}','protein',this.value)"></div>
+  <div class="fld"><label>Karbonhidrat (g)</label><input type="number" inputmode="numeric" value="${esc(e.carb)}" onchange="logset('${d}','carb',this.value)"></div>
+  <div class="fld"><label>Yağ (g)</label><input type="number" inputmode="numeric" value="${esc(e.fat)}" onchange="logset('${d}','fat',this.value)"></div>
+  <div class="hint"><span class="k">Hedefe göre durum</span>
+  ${MROWS.map(([k,l,unit])=>{
+    const goal=t[k]; const raw=e[k]; const v=parseFloat(raw); const has=raw!==""&&!isNaN(v);
+    const pctv=has?Math.round(v/goal*100):null;
+    const col=macroColor(k,pctv);
+    return `<div class="mrow"><span class="l">${l}</span><span class="v">${has?v:"–"}${unit?" "+unit:""} / ${goal}${unit?" "+unit:""} ${has?`<b style="color:${col}">(%${pctv})</b>`:""}</span></div>`;
+  }).join("")}
+  </div>`;
   const dates=Object.keys(S.log).sort().reverse();
-  // weekly average
   const wk=dates.filter(x=>S.log[x].kg!=="").slice(0,7).map(x=>parseFloat(S.log[x].kg)).filter(x=>!isNaN(x));
-  if(wk.length) h+=`<div class="hint"><span class="k">Son ${wk.length} ölçümün ortalaması</span><b>${(wk.reduce((a,b)=>a+b,0)/wk.length).toFixed(1)} kg</b></div>`;
+  if(wk.length) h+=`<div class="hint"><span class="k">Son ${wk.length} ölçümün kilo ortalaması</span><b>${(wk.reduce((a,b)=>a+b,0)/wk.length).toFixed(1)} kg</b></div>`;
+  const waistDates=Object.keys(S.log).filter(x=>S.log[x].waist!=="").sort();
+  if(waistDates.length){
+    const first=parseFloat(S.log[waistDates[0]].waist);
+    const last=parseFloat(S.log[waistDates[waistDates.length-1]].waist);
+    const delta=(last-first).toFixed(1);
+    h+=`<div class="hint"><span class="k">Bel çevresi (${fmt(waistDates[0])} → ${fmt(waistDates[waistDates.length-1])})</span><b>${last} cm</b> <span style="color:var(--mute)">(${delta>=0?"+":""}${delta} cm)</span></div>`;
+  }
+  h+=`<div class="fld" style="margin-top:12px"><label>Takviye</label><div class="cbs">${SUPS.map(([k,l])=>box(k,l,e.sup&&e.sup[k],`logsup('${d}','${k}')`)).join("")}</div></div>`;
   h+=`<div class="weekh"><span><b>Kayıtlar</b></span></div>`;
   for(const x of dates){ const r=S.log[x]; const sup=SUPS.filter(([k])=>r.sup&&r.sup[k]).map(([k,l])=>l.split(" ")[0]).join(" · ");
-    h+=`<div class="row" onclick="S.view.ld='${x}';save();render()"><div class="nm"><div class="t">${fmt(x)} ${r.kg!==""?`· <span style="color:var(--amber)">${r.kg} kg</span>`:""}</div><div class="d">${r.antr?"🏋️ antrenman ":""}${r.kardiyo?"🏃 kardiyo ":""}${sup?"· "+sup:""}</div></div><div class="arrow">›</div></div>`; }
+    h+=`<div class="row" onclick="S.view.ld='${x}';save();render()"><div class="nm"><div class="t">${fmt(x)} ${r.kg!==""?`· <span style="color:var(--amber)">${r.kg} kg</span>`:""}</div><div class="d">${r.kcal!==""?`${r.kcal} kcal · `:""}${r.antr?"🏋️ ":""}${r.kardiyo?"🏃 ":""}${sup?"· "+sup:""}</div></div><div class="arrow">›</div></div>`; }
   if(!dates.length) h+=`<p class="sm">Henüz kayıt yok.</p>`;
   return h+`</main>`;
 }
-function logent(d){ S.log=S.log||{}; return S.log[d]||(S.log[d]={kg:"",antr:false,kardiyo:false,sup:{}}); }
+function logent(d){ S.log=S.log||{}; return S.log[d]||(S.log[d]={kg:"",waist:"",kcal:"",protein:"",carb:"",fat:"",antr:false,kardiyo:false,sup:{}}); }
 function logset(d,k,v){ logent(d)[k]=v; save(); render(); }
 function logsup(d,k){ const e=logent(d); e.sup=e.sup||{}; e.sup[k]=!e.sup[k]; save(); render(); }
+
+/* ============ KURALLAR ============ */
+function rules(){
+  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Kurallar</h1></div><main>
+
+  <div class="weekh"><span><b>Strateji — Skinny Fat / Recomp</b></span></div>
+  <div class="ex">
+  <p style="margin:0 0 8px">Düşük kas kütlesi + yüksek karın yağı kombinasyonu. Çözüm ne agresif bulk ne agresif cut — <b>recomp</b>: küçük kalori açığı + yüksek protein + progresif ağırlık antrenmanı, aynı anda.</p>
+  <p style="margin:0">Bu faz (Faz 1) genelde <b>3-5 ay</b> sürer. Aceleye getirme, sadece aylık değerlendirmeyle ilerlet.</p>
+  </div>
+
+  <div class="weekh"><span><b>Kalori & Makro Mantığı</b></span></div>
+  <div class="ex">
+  <p style="margin:0 0 6px"><b>Antrenman günü:</b> karbonhidrat daha yüksek — glikojen antrenman performansını doğrudan besler.</p>
+  <p style="margin:0 0 6px"><b>Dinlenme günü:</b> karbonhidrat ~%20 daha düşük — o gün ekstra yakıta ihtiyaç yok, fazlası yağ olarak birikir.</p>
+  <p style="margin:0">Protein ve yağ her gün sabit kalır, sadece karbonhidrat oynar. Hedefleri Ayarlar sayfasından değiştirebilirsin.</p>
+  </div>
+
+  <div class="weekh"><span><b>Bel Ölçümü</b></span></div>
+  <div class="ex">
+  <p style="margin:0 0 6px">En kalın noktadan ölç — göbek deliği zorunlu değil. Senin için alt karın bölgesiyse orası referans noktan.</p>
+  <p style="margin:0 0 6px">Kritik kural: <b>her zaman aynı noktadan</b> ölç. İlk ölçtüğünde o noktayı not al ve her ay oradan ölç.</p>
+  <p style="margin:0">Sabah aç karnına, ayakta, mezura yere paralel, karın çekilmeden — ayda 1 kez yeterli, daha sık ölçüm su tutmasından yanıltır.</p>
+  </div>
+
+  <div class="weekh"><span><b>Değerlendirme Kuralları</b></span></div>
+  <div class="ex">
+  <p style="margin:0 0 8px">Ayda 1-2 kez değerlendir. Tek haftaya göre karar verme — trend en az 2-3 hafta aynı yöne gitmeli.</p>
+  <table class="rt">
+   <tr><th>Haftalık trend</th><th>Anlamı</th><th>Aksiyon</th></tr>
+   <tr><td>Tartı & bel sabit</td><td>Açık yok</td><td>−100/−150 kcal</td></tr>
+   <tr><td>0,2-0,4 kg/hafta düşüş</td><td>Hedef bölge</td><td>Dokunma</td></tr>
+   <tr><td>0,5+ kg/hafta düşüş</td><td>Açık çok derin</td><td>+100/+200 kcal</td></tr>
+   <tr><td>Tartı yükseliyor</td><td>Fazla kalori</td><td>−100/−200 kcal</td></tr>
+  </table>
+  <p style="margin:8px 0 0">Ayarlama karbonhidrattan yapılır, protein asla kısılmaz.</p>
+  </div>
+
+  <div class="weekh"><span><b>Faz 2'ye Geçiş</b></span></div>
+  <div class="ex">
+  <p style="margin:0">Üçü birlikte gerçekleştiğinde geç: bel çevresi ilk ölçümden <b>4-6 cm+</b> düşmüş, karın hafif seçilmeye başlamış, fotoğrafta net fark var. O noktada kalori bakıma çıkar, karbonhidrat oranı yükselir — bu aşamaya gelince hedefleri yeniden hesaplat.</p>
+  </div>
+
+  <div class="weekh"><span><b>Diğer Kritik Noktalar</b></span></div>
+  <div class="ex">
+  <p style="margin:0 0 6px"><b>Uyku:</b> 7,5-8 saat hedefle. Uyku kısıldığında kaybedilen kilonun büyük kısmı yağ değil, kastan gider.</p>
+  <p style="margin:0 0 6px"><b>Kardiyo:</b> futbol zaten sayılıyor, ekstra haftada 1-2× 30 dk düşük tempo yeterli. HIIT'e gerek yok.</p>
+  <p style="margin:0">Tartı günlük değil <b>haftalık ortalama</b> ile değerlendirilir — tuz, glikojen, su tutması günlük 1-2 kg oynatabilir, tek günü yorumlama.</p>
+  </div>
+  </main>`;
+}
 
 /* ============ ACTIONS ============ */
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
 function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done&&!s.doneDate) s.doneDate=today(); save(); go('home'); }
 function cfg(k,v){ S.cfg[k]=v; save(); }
+function cfgT(day,key,v){ S.cfg.targets[day][key]=v; save(); }
 function keep(){ S.view.scroll=window.scrollY; save(); }
 function dl(name,txt,type){ const b=new Blob([txt],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
 function csvSess(){ const rows=[["Antrenman#","Hafta","Gün","Tarih","Tamamlandı","Egzersiz","Set","Kg","Tekrar/sn"]];
   for(const s of schedule()){ const d=S.sess[s.i]; if(!d) continue; DAYS[s.day].ex.forEach((E,j)=>{ const e=d.ex[j]; if(!e) return; e.sets.forEach((st,k)=>{ if(st.kg===""&&st.reps==="") return; rows.push([s.i+1,s.week,DAYS[s.day].name,d.doneDate||"",d.done?"evet":"hayır",E.n,k+1,st.kg,st.reps]); }); }); }
   dl("minmax-antrenman.csv","\ufeff"+rows.map(r=>r.join(";")).join("\n"),"text/csv"); }
-function csvLog(){ const rows=[["Tarih","Kilo","Antrenman","Kardiyo",...SUPS.map(x=>x[1])]];
-  for(const d of Object.keys(S.log||{}).sort()){ const e=S.log[d]; rows.push([d,e.kg,e.antr?1:0,e.kardiyo?1:0,...SUPS.map(([k])=>e.sup&&e.sup[k]?1:0)]); }
+function csvLog(){ const rows=[["Tarih","Kilo","Bel","Kalori","Protein","Karbonhidrat","Yağ","Antrenman","Kardiyo",...SUPS.map(x=>x[1])]];
+  for(const d of Object.keys(S.log||{}).sort()){ const e=S.log[d]; rows.push([d,e.kg,e.waist,e.kcal,e.protein,e.carb,e.fat,e.antr?1:0,e.kardiyo?1:0,...SUPS.map(([k])=>e.sup&&e.sup[k]?1:0)]); }
   dl("minmax-gunluk.csv","\ufeff"+rows.map(r=>r.join(";")).join("\n"),"text/csv"); }
 function exportJ(){ const b=new Blob([JSON.stringify(S)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="minmax-yedek.json"; a.click(); }
-function importJ(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); go('home'); }catch(e){ alert("Dosya okunamadı"); } }; r.readAsText(f); }
+function importJ(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); ensureCfg(); save(); go('home'); }catch(e){ alert("Dosya okunamadı"); } }; r.readAsText(f); }
 
 /* ============ TIMER ============ */
 const T={left:0,total:0,iv:null,run:false,ac:null,
