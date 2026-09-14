@@ -114,6 +114,13 @@ table.rt{width:100%;border-collapse:collapse;font-size:12.5px}
 table.rt th{text-align:left;color:var(--mute);font-weight:600;padding:4px 4px 6px;border-bottom:1px solid var(--line)}
 table.rt td{padding:6px 4px;border-bottom:1px solid var(--line)}
 table.rt tr:last-child td{border-bottom:0}
+/* menu */
+#menu{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:8;display:none}
+#menu.on{display:block}
+#menu .panel{position:absolute;top:calc(env(safe-area-inset-top) + 54px);right:14px;left:14px;max-width:280px;margin-left:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+#menu .item{padding:14px 16px;font-size:16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+#menu .item:last-child{border-bottom:0}
+#menu .item:active{background:var(--card2)}
 </style>
 </head>
 <body>
@@ -126,6 +133,15 @@ table.rt tr:last-child td{border-bottom:0}
     <button onclick="T.adj(15)">+15</button>
     <button onclick="T.toggle()" id="tpp">II</button>
     <button onclick="T.stop()">✕</button>
+  </div>
+</div>
+<div id="menu" onclick="if(event.target===this) M.close()">
+  <div class="panel">
+    <div class="item" onclick="M.go('home')">🏠 Antrenmanlar</div>
+    <div class="item" onclick="M.go('log')">📋 Günlük</div>
+    <div class="item" onclick="M.go('progress')">📈 İlerleme</div>
+    <div class="item" onclick="M.go('rules')">ⓘ Kurallar</div>
+    <div class="item" onclick="M.go('set')">⚙︎ Ayarlar</div>
   </div>
 </div>
 <script>
@@ -262,15 +278,16 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function render(){
   const p=S.view.page;
-  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): p==="log"?logpage(): p==="rules"?rules(): settings();
+  $("#app").innerHTML = p==="home"?home(): p==="sess"?session(S.view.i): p==="log"?logpage(): p==="rules"?rules(): p==="progress"?progress(): settings();
   window.scrollTo(0,S.view.scroll||0);
 }
 function go(page,i){ S.view={page,i,scroll:0}; save(); render(); }
+const M={ open(){ $("#menu").classList.add("on"); }, close(){ $("#menu").classList.remove("on"); }, go(page){ this.close(); go(page); } };
 
 function home(){
   const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
   const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
-  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="go('rules')">ⓘ</button><button class="ib" onclick="go('log')">▤</button><button class="ib" onclick="go('set')">⚙︎</button></div><main>`;
+  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
   <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
   h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
@@ -287,7 +304,7 @@ function home(){
 function session(i){
   const s=schedule()[i]; if(!s){S.view.page="home";return home();}
   const D=DAYS[s.day], sd=sessData(i), light=isLight(s.pw), b2=s.pw>=8;
-  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}</span></h1></div><main>`;
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   if(light) h+=`<div class="banner">${s.pw===1?"Intro":"Deload"} haftası: RIR hedefleri daha yüksek, kiloyu zorlama. Kilo önerisi bu hafta bir önceki seansla aynı tutulur.</div>`;
   if(b2) h+=`<div class="banner">Blok 2: amber etiketli egzersizlerde yoğunluk tekniği sadece <b>son çalışma setinden sonra</b> uygulanır.</div>`;
   D.ex.forEach((E,j)=>{
@@ -318,7 +335,7 @@ function session(i){
 
 function settings(){
   const c=S.cfg; 
-  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Ayarlar</h1></div><main>
+  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Ayarlar</h1><button class="ib" onclick="M.open()">☰</button></div><main>
   <div class="fld"><label>Kaç hafta listelensin</label><input type="number" value="${c.weeks}" onchange="cfg('weeks',Math.max(1,+this.value));render()">
   <p class="sm">Her hafta 4 antrenman: Full Body → Upper → Lower → Arms/Delts. 12 haftadan sonra RIR/teknik düzeni baştan başlar (H13 = intro gibi), numaralar düz devam eder. Tarihleri antrenman günü kendin girersin.</p>
   <p class="sm" style="white-space:pre-line">${esc(LAYOUT)}</p></div>
@@ -356,7 +373,7 @@ function logpage(){
   S.log=S.log||{}; const d=S.view.ld||today(); const e=logent(d);
   const box=(k,lbl,on,fn)=>`<label class="cb ${on?"on":""}" onclick="${fn}"><span class="sq">${on?"✓":""}</span>${lbl}</label>`;
   const t = S.cfg.targets[e.antr?"train":"rest"];
-  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Günlük</h1><button class="ib" onclick="go('rules')">ⓘ</button></div><main>
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Günlük</h1><button class="ib" onclick="M.open()">☰</button></div><main>
   <div class="fld"><label>Tarih</label><input type="date" value="${d}" onchange="S.view.ld=this.value;save();render()"></div>
   <div class="fld"><label>Kilo (kg)</label><input type="number" inputmode="decimal" step="0.1" value="${esc(e.kg)}" onchange="logset('${d}','kg',this.value)"></div>
   <div class="fld"><label>Bel ölçümü (cm)</label><input type="number" inputmode="decimal" step="0.5" value="${esc(e.waist)}" onchange="logset('${d}','waist',this.value)">
@@ -400,7 +417,7 @@ function logsup(d,k){ const e=logent(d); e.sup=e.sup||{}; e.sup[k]=!e.sup[k]; sa
 
 /* ============ KURALLAR ============ */
 function rules(){
-  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Kurallar</h1></div><main>
+  return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Kurallar</h1><button class="ib" onclick="M.open()">☰</button></div><main>
 
   <div class="weekh"><span><b>Strateji — Skinny Fat / Recomp</b></span></div>
   <div class="ex">
@@ -437,7 +454,9 @@ function rules(){
 
   <div class="weekh"><span><b>Faz 2'ye Geçiş</b></span></div>
   <div class="ex">
-  <p style="margin:0">Üçü birlikte gerçekleştiğinde geç: bel çevresi ilk ölçümden <b>4-6 cm+</b> düşmüş, karın hafif seçilmeye başlamış, fotoğrafta net fark var. O noktada kalori bakıma çıkar, karbonhidrat oranı yükselir — bu aşamaya gelince hedefleri yeniden hesaplat.</p>
+  <p style="margin:0 0 6px">Hedef nokta sabit: <b>~%15 civarı</b> (düşük-orta yağ sınırı) — başlangıç yüzden %20, %25 veya %30 olsun fark etmez, oransal bir düşüş değil. Nereden başlarsan başla varış noktası aynı, sadece yol uzunluğu değişir.</p>
+  <p style="margin:0 0 6px">Başlangıcın <b>%25'in üzerindeyse</b>, kitap daha büyük bir açık öneriyor: standart %10-20 yerine <b>%20-30</b>. Yakılacak yağ deposu fazla olduğu için kas kaybı riski düşükken süreci hızlandırabilirsin — Ayarlar'dan kalori hedeflerini buna göre biraz daha kısabilirsin.</p>
+  <p style="margin:0">Kesin ölçüm (kaliper/BIA/DEXA) yoksa yüzdeyi izlemeye çalışma — bel çevresi ilk ölçümden <b>4-6 cm+</b> düşmüş, karın hafif seçilmeye başlamış ve fotoğrafta net fark varsa, o bölgeye gelmişsindir demektir. Üçü birlikte gerçekleştiğinde geç. O noktada kalori bakıma çıkar, karbonhidrat oranı yükselir — hedefleri yeniden hesaplat.</p>
   </div>
 
   <div class="weekh"><span><b>Diğer Kritik Noktalar</b></span></div>
@@ -448,6 +467,57 @@ function rules(){
   </div>
   </main>`;
 }
+
+/* ============ İLERLEME ============ */
+function chartSVG(pts){
+  const W=320,H=180,padL=36,padR=10,padT=12,padB=22;
+  const ys=pts.map(p=>p.kg);
+  let yMin=Math.min(...ys), yMax=Math.max(...ys);
+  if(yMin===yMax){ yMin-=2.5; yMax+=2.5; }
+  const pad=(yMax-yMin)*0.15||1; yMin=Math.max(0,yMin-pad); yMax+=pad;
+  const n=pts.length;
+  const x=k=>padL+(n<=1?(W-padL-padR)/2:(k/(n-1))*(W-padL-padR));
+  const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
+  const line=pts.map((p,k)=>`${k===0?"M":"L"}${x(k).toFixed(1)},${y(p.kg).toFixed(1)}`).join(" ");
+  const dots=pts.map((p,k)=>`<circle cx="${x(k).toFixed(1)}" cy="${y(p.kg).toFixed(1)}" r="3.5" style="fill:var(--amber)"/>`).join("");
+  const step=n<=8?1:Math.ceil(n/8);
+  const xlabels=pts.map((p,k)=>(k%step===0||k===n-1)?`<text x="${x(k).toFixed(1)}" y="${H-6}" font-size="9" style="fill:var(--mute)" text-anchor="middle">${k+1}</text>`:"").join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+  <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" style="stroke:var(--line)"/>
+  <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" style="stroke:var(--line)"/>
+  <text x="${padL-4}" y="${(y(yMax)+3).toFixed(1)}" font-size="9" style="fill:var(--mute)" text-anchor="end">${yMax.toFixed(1)}</text>
+  <text x="${padL-4}" y="${(y(yMin)+3).toFixed(1)}" font-size="9" style="fill:var(--mute)" text-anchor="end">${yMin.toFixed(1)}</text>
+  <path d="${line}" fill="none" style="stroke:var(--amber)" stroke-width="2"/>
+  ${dots}
+  ${xlabels}
+  </svg>`;
+}
+function progress(){
+  const dayIdx = S.view.pDay ?? 0;
+  const D = DAYS[dayIdx];
+  const exIdx = Math.min(S.view.pEx ?? 0, D.ex.length-1);
+  const E = D.ex[exIdx];
+  const pts=[];
+  schedule().filter(s=>s.day===dayIdx).forEach(s=>{
+    const sess=S.sess[s.i]; const ed=sess&&sess.ex[exIdx]; if(!ed) return;
+    const kg=ed.sets[0]&&ed.sets[0].kg; if(kg===""||kg==null) return;
+    const v=parseFloat(kg); if(isNaN(v)) return;
+    pts.push({session:s.i+1, kg:v, reps:ed.sets[0].reps});
+  });
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>İlerleme</h1><button class="ib" onclick="M.open()">☰</button></div><main>
+  <div class="fld"><label>Antrenman Günü</label><select onchange="setProg('day',+this.value)">${DAYS.map((dd,ix)=>`<option value="${ix}" ${ix===dayIdx?"selected":""}>${esc(dd.name)}</option>`).join("")}</select></div>
+  <div class="fld"><label>Hareket</label><select onchange="setProg('ex',+this.value)">${D.ex.map((ee,ix)=>`<option value="${ix}" ${ix===exIdx?"selected":""}>${esc(ee.n)}</option>`).join("")}</select></div>`;
+  if(!pts.length){
+    h+=`<p class="sm">${esc(E.n)} için henüz kayıtlı set verisi yok. İlgili antrenman seansında S1 kilosunu girdikçe burada birikir.</p>`;
+  } else {
+    h+=`<div class="ex"><div class="num">${esc(E.n)} — S1 ağırlık (kg)</div>${chartSVG(pts)}</div>
+    <table class="rt"><tr><th>#</th><th>Antrenman</th><th>S1 Kg</th><th>S1 Tekrar</th></tr>
+    ${pts.map((p,k)=>`<tr><td>${k+1}</td><td>#${p.session}</td><td>${p.kg}</td><td>${esc(p.reps||"–")}</td></tr>`).join("")}
+    </table>`;
+  }
+  return h+`</main>`;
+}
+function setProg(k,v){ if(k==="day"){ S.view.pDay=v; S.view.pEx=0; } else { S.view.pEx=v; } save(); render(); }
 
 /* ============ ACTIONS ============ */
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
