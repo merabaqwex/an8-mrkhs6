@@ -178,8 +178,8 @@ const DAYS = [
   {n:"Overhead Cable Triceps Ext.",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
   {n:"Modified Zottman Curl",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Çıkarken hammer, inerken avuç yukarı."},
   {n:"Cable Triceps Kickback",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
-  {n:"DB Wrist Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
-  {n:"DB Wrist Extension",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"Cable Wrist Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
+  {n:"Cable Wrist Extension",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
   {n:"Alternating DB Curl",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Yavaş, kontrollü tekrarlar!"},
   {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Myo-reps",rest:90,t:"i",note:"Ağırlığı yan delt'i sıkarak hareket ettir."},
   {n:"Dead Hang (opsiyonel)",a:[],warm:"0-1",sets:2,r:null,rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Her hafta birkaç saniye ekle. Tekrar yerine saniye gir."},
@@ -240,20 +240,19 @@ const sessData = i => S.sess[i] || (S.sess[i]={done:false,doneDate:"",ex:{}});
 const exData = (i,j,E) => { const s=sessData(i); return s.ex[j] || (s.ex[j]={sets:Array.from({length:E.sets},()=>({kg:"",reps:""}))}); };
 const roundTo = (x,q)=>Math.round(x/q)*q;
 
-// suggestion: look back for same slot with same chosen exercise and data
-function suggest(i,j,E){
+// suggestion: look back for same slot + same set index, independent per set
+function suggest(i,j,k,E){
   if(!E.r) return null;
   const sched = schedule();
-  for(let k=i-1;k>=0;k--){
-    const sk=sched[k]; if(!sk || sk.day!==i%4) continue;
-    const d=S.sess[k]&&S.sess[k].ex[j]; if(!d) continue;
-    const sets=d.sets.filter(s=>s.kg!==""&&s.reps!=="");
-    if(!sets.length) continue;
-    const kg=parseFloat(d.sets[0].kg); if(isNaN(kg)) continue;
-    const top = sets.length===d.sets.length && sets.every(s=>parseFloat(s.reps)>=E.r[1]);
+  for(let x=i-1;x>=0;x--){
+    const sx=sched[x]; if(!sx || sx.day!==i%4) continue;
+    const d=S.sess[x]&&S.sess[x].ex[j]; if(!d) continue;
+    const st=d.sets[k]; if(!st||st.kg===""||st.reps==="") continue;
+    const kg=parseFloat(st.kg); if(isNaN(kg)) continue;
+    const reps=parseFloat(st.reps); if(isNaN(reps)) continue;
     const inc = E.t==="c"?S.cfg.incC:S.cfg.incI;
-    if(top) return {kg:kg+inc, why:`Geçen seans ${sets.map(s=>s.reps).join("/")} tekrar – üst sınıra ulaştın, +${inc} kg`, prev:kg, prevReps:sets.map(s=>s.reps).join("/")};
-    return {kg, why:`Geçen seans ${kg} kg × ${sets.map(s=>s.reps).join("/")} – aynı kiloyla ${E.r[1]} tekrarı hedefle`, prev:kg, prevReps:sets.map(s=>s.reps).join("/")};
+    if(reps>=E.r[1]) return {kg:kg+inc, why:`Geçen seans ${reps} tekrar – üst sınıra ulaştın, +${inc} kg`, prev:kg, prevReps:reps};
+    return {kg, why:`Geçen seans ${kg} kg × ${reps} – aynı kiloyla ${E.r[1]} tekrarı hedefle`, prev:kg, prevReps:reps};
   }
   return null;
 }
@@ -311,19 +310,25 @@ function session(i){
   D.ex.forEach((E,j)=>{
     const d=exData(i,j,E);
     const rir=light?E.rirI:E.rirN;
-    const sug=suggest(i,j,E);
-    const sugKg = sug ? (light?sug.prev:sug.kg) : null;
-    const work = d.sets[0].kg!==""?parseFloat(d.sets[0].kg):sugKg;
+    const sugs = d.sets.map((st,k)=>suggest(i,j,k,E));
+    const sug0 = sugs[0];
+    const sugKg0 = sug0 ? (light?sug0.prev:sug0.kg) : null;
+    const work = d.sets[0].kg!==""?parseFloat(d.sets[0].kg):sugKg0;
     const wu=warmup(E,work);
     h+=`<div class="ex"><div class="num">Egzersiz ${j+1}</div><h2 style="font-size:20px;margin:2px 0 4px">${esc(E.n)}</h2>
     <div class="chips"><span class="chip">Isınma <b>${wu.n} set</b></span><span class="chip">Çalışma <b>${E.sets} set</b></span><span class="chip">Tekrar <b>${E.r?E.r.join("–"):"süre"}</b></span><span class="chip">Dinlenme <b>${E.rest/60} dk</b></span>${b2&&E.tech?`<span class="chip tech">${esc(E.tech)}</span>`:""}</div>`;
-    if(sug) h+=`<div class="hint s"><span class="k">Öneri${light?" (hafif hafta)":""}</span><span class="v">${sugKg} kg</span> <span style="color:var(--mute);font-size:12px"> · ${esc(light?`Geçen seans ${sug.prev} kg × ${sug.prevReps}`:sug.why)}</span></div>`;
+    if(E.r && sugs.some(sg=>sg)) h+=`<div class="hint s"><span class="k">Öneri${light?" (hafif hafta)":""} — set başına</span>${sugs.map((sg,k)=>{
+      if(!sg) return `<div style="margin-top:4px;font-size:13px">Set ${k+1}: <span style="color:var(--mute)">ilk seans</span></div>`;
+      const sk=light?sg.prev:sg.kg;
+      return `<div style="margin-top:4px;font-size:13px">Set ${k+1}: <b style="color:var(--amber)">${sk} kg</b> <span style="color:var(--mute)">· ${esc(light?`geçen ${sg.prev} kg × ${sg.prevReps}`:sg.why)}</span></div>`;
+    }).join("")}</div>`;
     else if(E.r) h+=`<div class="hint"><span class="k">Öneri</span>İlk seans – kiloyu kendin belirle, sonraki seansta öneri çıkar.</div>`;
     if(wu.list.length) h+=`<div class="hint"><span class="k">Isınma (${work} kg üzerinden)</span><div class="wu">${wu.list.map((w,k)=>`<span>${k+1}: <b>${w.kg} kg</b> × ${w.reps}</span>`).join("")}</div></div>`;
     else if(E.r) h+=`<div class="hint"><span class="k">Isınma</span>${wu.n} set – S1 kilosunu girince hesaplanır.</div>`;
     h+=`<div class="sets">`;
     d.sets.forEach((st,k)=>{
-      h+=`<div class="set"><div class="lab">Set<b>${k+1}</b></div><input type="number" inputmode="decimal" step="0.5" placeholder="${E.r?(sugKg??"kg"):"—"}" value="${esc(st.kg)}" onchange="setv(${i},${j},${k},'kg',this.value)">
+      const sg=sugs[k]; const sk=sg?(light?sg.prev:sg.kg):null;
+      h+=`<div class="set"><div class="lab">Set<b>${k+1}</b></div><input type="number" inputmode="decimal" step="0.5" placeholder="${E.r?(sk??"kg"):"—"}" value="${esc(st.kg)}" onchange="setv(${i},${j},${k},'kg',this.value)">
       <input type="number" inputmode="numeric" placeholder="${E.r?"tekrar":"sn"}" value="${esc(st.reps)}" onchange="setv(${i},${j},${k},'reps',this.value)"><div class="rir">RIR<b>${rir[k]??"–"}</b></div></div>`;
     });
     h+=`</div><div class="exfoot"><button class="btn am" onclick="T.start(${E.rest},'${esc(E.n)}')">▶ Dinlen ${E.rest/60} dk</button><button class="btn" onclick="T.start(60,'${esc(E.n)}')">1 dk</button></div>
