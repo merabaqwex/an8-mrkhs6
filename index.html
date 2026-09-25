@@ -170,11 +170,11 @@ const DAYS = [
  {name:"Torso B", ex:[
   {n:"Machine Chest Press",a:[],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
   {n:"Cable Fly",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
-  {n:"Seated DB Shoulder Press",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın sandalyeye yaslı, dirsekler en az 90° kırılsın, üstte kilitlemeden kontrollü indir."},
+  {n:"Seated Smith Machine Shoulder Press",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
   {n:"1-Arm Cable Row",a:[],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Tek kolla çek, gövdeyi sabit tut, üstte kürek kemiğini sık. Sağ-sol dengesizliğini takip et."},
   {n:"Straight-Arm Pulldown",a:[],warm:"0-1",sets:2,r:[10,12],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, dirsekleri kırmadan kafa üstünden kalçaya doğru yay çiz. Lat'lerde derin gerilme hisset."},
   {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
-  {n:"1-Arm Reverse Pec Deck",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Tek kolla, mümkün olan en büyük yarım daireyi çiz, arka delt'e odaklan."},
+  {n:"Face Pull",a:[],warm:"0-1",sets:1,r:[10,12],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"İp/çift tutamaç kullan, yüz hizasına doğru çek, dirsekleri yüksek tut, üstte arka delt ve rotator cuff'ı sık."},
   {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[1],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
  ]},
@@ -549,15 +549,19 @@ function exportJ(){ const b=new Blob([JSON.stringify(S)],{type:"application/json
 function importJ(inp){ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); ensureCfg(); save(); go('home'); }catch(e){ alert("Dosya okunamadı"); } }; r.readAsText(f); }
 
 /* ============ TIMER ============ */
-const T={left:0,total:0,iv:null,run:false,ac:null,
- start(sec,lbl){ this.total=sec; this.left=sec; this.run=true; $("#tlbl").textContent=lbl||"Dinlenme"; $("#timer").classList.add("on"); $("#tm").classList.remove("fin"); this.tick(); clearInterval(this.iv); this.iv=setInterval(()=>this.tick(),1000); this.ac||(this.ac=new (window.AudioContext||window.webkitAudioContext)()); },
- tick(){ if(this.run) this.left--; if(this.left<=0){ this.left=0; this.done(); } const m=Math.floor(this.left/60), s=this.left%60; $("#tm").textContent=`${m}:${s<10?"0":""}${s}`; $("#tring").style.width=(this.total?this.left/this.total*100:0)+"%"; },
- adj(d){ this.left=Math.max(0,this.left+d); this.total=Math.max(this.total,this.left); this.tick(); },
- toggle(){ this.run=!this.run; $("#tpp").textContent=this.run?"II":"▶"; },
- stop(){ clearInterval(this.iv); $("#timer").classList.remove("on"); },
- done(){ clearInterval(this.iv); $("#tm").classList.add("fin"); if(navigator.vibrate) navigator.vibrate([200,100,200]); this.beep(); setTimeout(()=>this.stop(),4000); },
+// endTime tabanlı: ekran kilitlenip setInterval durduğunda bile açılınca doğru kalan süreyi gösterir
+const T={endTime:0,total:0,pausedLeft:0,iv:null,run:false,ac:null,
+ start(sec,lbl){ this.total=sec; this.endTime=Date.now()+sec*1000; this.run=true; $("#tlbl").textContent=lbl||"Dinlenme"; $("#timer").classList.add("on"); $("#tm").classList.remove("fin"); $("#tpp").textContent="II"; this.tick(); clearInterval(this.iv); this.iv=setInterval(()=>this.tick(),1000); this.ac||(this.ac=new (window.AudioContext||window.webkitAudioContext)()); },
+ get left(){ return this.run ? Math.max(0,Math.round((this.endTime-Date.now())/1000)) : this.pausedLeft; },
+ tick(){ const l=this.left; if(this.run&&l<=0){ this.done(); return; } const m=Math.floor(l/60), s=l%60; $("#tm").textContent=`${m}:${s<10?"0":""}${s}`; $("#tring").style.width=(this.total?l/this.total*100:0)+"%"; },
+ adj(d){ if(this.run) this.endTime+=d*1000; else this.pausedLeft=Math.max(0,this.pausedLeft+d); this.total=Math.max(this.total,this.left); this.tick(); },
+ toggle(){ if(this.run){ this.pausedLeft=this.left; this.run=false; } else { this.endTime=Date.now()+this.pausedLeft*1000; this.run=true; } $("#tpp").textContent=this.run?"II":"▶"; this.tick(); },
+ stop(){ clearInterval(this.iv); this.run=false; $("#timer").classList.remove("on"); },
+ done(){ clearInterval(this.iv); this.run=false; this.pausedLeft=0; $("#tm").classList.add("fin"); if(navigator.vibrate) navigator.vibrate([200,100,200]); this.beep(); setTimeout(()=>this.stop(),4000); },
  beep(){ try{ const ac=this.ac; [0,.25,.5].forEach(t=>{ const o=ac.createOscillator(), g=ac.createGain(); o.frequency.value=880; o.connect(g); g.connect(ac.destination); g.gain.setValueAtTime(.3,ac.currentTime+t); g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t+.2); o.start(ac.currentTime+t); o.stop(ac.currentTime+t+.22); }); }catch(e){} }
 };
+// sekme/ekran tekrar görünür olunca sayacı hemen doğru değere çek (throttle edilmiş interval'ı beklemeden)
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden && T.run) T.tick(); });
 render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
 </script>
