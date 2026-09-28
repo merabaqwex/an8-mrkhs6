@@ -150,8 +150,8 @@ table.rt tr:last-child td{border-bottom:0}
 const DAYS = [
  {name:"Torso A", ex:[
   {n:"DB Incline Press",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"30–45° bench. Altta 1 sn dur, pec gerginliğini koru. RIR 0 = son tekrarı denemeden bırak."},
-  {n:"Chest-Supported DB Row",a:[],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
-  {n:"Seated Smith Machine Shoulder Press",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
+  {n:"Chest-Supported DB Row",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
+  {n:"Seated Smith Machine Shoulder Press",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
   {n:"Lat Pulldown (Wide Grip)",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
   {n:"Incline DB Y-Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"30° bench'e sırtını yasla, ağırlığı Y şeklinde yukarı-dışa kaldır."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
@@ -159,9 +159,9 @@ const DAYS = [
  ]},
  {name:"Limbs A", ex:[
   {n:"Squat",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[3,2],rirN:[1,0],tech:null,rest:240,t:"c",note:"Back/Front Squat, Pendulum, Hack, Belt veya Smith olabilir. Failure'a gideceksen makine varyantı (Smith/Hack) kullan. RIR 0 = son tekrarı denemeden bırak (güvenlik)."},
-  {n:"DB Romanian Deadlift",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[3,2],rirN:[2,1],tech:null,rest:150,t:"c",note:"Kalçayı geriye it, dumbbell'lar bacağa yakın. Omurga nötr, altta derin esneme."},
-  {n:"Machine Hip Thrust",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Üstte kalçayı sert sık, inişi kontrol et."},
-  {n:"Incline DB Curl",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"İstersen öne eğil. Negatifi kontrol et, altta derin esneme."},
+  {n:"DB Romanian Deadlift",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[3,2],rirN:[2,1],tech:null,rest:150,t:"c",note:"Kalçayı geriye it, dumbbell'lar bacağa yakın. Omurga nötr, altta derin esneme."},
+  {n:"Machine Hip Thrust",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Üstte kalçayı sert sık, inişi kontrol et."},
+  {n:"Bayesian Cable Curl",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Alçak makara, makaraya sırtını dön, bir adım öne çık; kol gövdenin arkasında başlar (long head'de derin esneme), kablo sayesinde tüm ROM boyunca gerginlik kesilmez."},
   {n:"Overhead Cable Triceps Ext.",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
   {n:"Cable Wrist Curl",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
   {n:"Standing Calf Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
@@ -169,8 +169,8 @@ const DAYS = [
  ]},
  {name:"Torso B", ex:[
   {n:"Machine Chest Press",a:[],warm:"2-4",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
-  {n:"1-Arm Cable Row",a:[],warm:"2-3",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Tek kolla çek, gövdeyi sabit tut, üstte kürek kemiğini sık. Sağ-sol dengesizliğini takip et."},
-  {n:"Seated Smith Machine Shoulder Press",a:[],warm:"2-3",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
+  {n:"1-Arm Cable Row",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[2,1],rirN:[1,0],tech:null,rest:150,t:"c",note:"Tek kolla çek, gövdeyi sabit tut, üstte kürek kemiğini sık. Sağ-sol dengesizliğini takip et."},
+  {n:"Seated Smith Machine Shoulder Press",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[2,1],rirN:[1,0],tech:null,rest:240,t:"c",note:"Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
   {n:"Cable Fly",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
   {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
   {n:"Straight-Arm Pulldown",a:[],warm:"0-1",sets:2,r:[10,12],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, dirsekleri kırmadan kafa üstünden kalçaya doğru yay çiz. Lat'lerde derin gerilme hisset."},
@@ -183,9 +183,9 @@ const DAYS = [
   {n:"Lying Leg Curl",a:[],warm:"1-2",sets:3,r:[6,8],rirI:[2,1,0],rirN:[1,0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
   {n:"Glute Kickback",a:[],warm:"0-1",sets:1,r:[10,12],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Üstte 1 sn sık, belini yuvarlamadan sadece kalçadan it."},
   {n:"Cable Triceps Kickback",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
-  {n:"Modified Zottman Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Çıkarken hammer, inerken avuç yukarı."},
+  {n:"Preacher Hammer Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[1,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Preacher (scott) sehpasına yasla, nötr (şakül) tutuş. Sehpa omuz yardımını keser, brakiyalis/ön kol dış kısmı izole olur."},
   {n:"Triceps Pressdown",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Dirsekleri sabit tut, sadece ön koldan hareket et."},
-  {n:"Alternating DB Curl",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Yavaş, kontrollü tekrarlar!"},
+  {n:"Preacher Curl",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Preacher (scott) sehpasına yasla, supine (avuç yukarı) tutuş, kontrollü tekrar. Sehpa sayesinde drop set'te de form bozulmaz."},
   {n:"Standing Calf Raise",a:[],warm:"0-1",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur. Ayak bileğini ayak tabanı üzerinde ileri-geri yuvarla."},
  ]},
 ];
