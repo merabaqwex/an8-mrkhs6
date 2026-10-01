@@ -300,7 +300,7 @@ function home(){
     const key=s.week;
     if(key!==lastW){ lastW=key; h+=`<div class="weekh"><span><b>Hafta ${s.week}</b></span>${s.pw===1?'<span class="tag">Intro · RIR yüksek</span>':s.pw===7?'<span class="tag">Deload · RIR yüksek</span>':s.pw>=8?'<span class="tag">Blok 2 · teknikler</span>':''}</div>`; }
     const d=S.sess[s.i]||{};
-    h+=`<div class="row ${d.done?"done":""}" onclick="go('sess',${s.i})"><div class="chk">${d.done?"✓":""}</div><div class="nm"><div class="t">${esc(DAYS[s.day].name)}</div><div class="d">#${s.i+1}${d.doneDate?` · <span class="${d.done?"ok":""}">${fmt(d.doneDate)}</span>`:""}</div></div><div class="arrow">›</div></div>`;
+    h+=`<div class="row ${d.done?"done":""}" onclick="go('sess',${s.i})"><div class="chk">${d.done?"✓":""}</div><div class="nm"><div class="t">${esc(DAYS[s.day].name)}</div><div class="d">#${s.i+1}${d.doneDate?` · <span class="${d.done?"ok":""}">${fmt(d.doneDate)}</span>`:""}${d.durMin!=null?` · ${d.durMin} dk`:""}</div></div><div class="arrow">›</div></div>`;
   }
   return h+`</main>`;
 }
@@ -308,7 +308,8 @@ function home(){
 function session(i){
   const s=schedule()[i]; if(!s){S.view.page="home";return home();}
   const D=DAYS[s.day], sd=sessData(i), light=isLight(s.pw), b2=s.pw>=8;
-  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
+  let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}${sd.durMin!=null?` · ${sd.durMin} dk sürdü`:""}</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
+  h+=`<div class="hint" style="margin-bottom:10px">${sd.start?`<span class="k">Başlangıç</span>${new Date(sd.start).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}<button class="btn" style="margin-left:10px;padding:4px 10px;font-size:12px" onclick="startWorkout(${i})">Yeniden başlat</button>`:`<button class="btn full" onclick="startWorkout(${i})">▶ Antrenmana Başla</button>`}</div>`;
   if(light) h+=`<div class="banner">${s.pw===1?"Intro":"Deload"} haftası: RIR hedefleri daha yüksek, kiloyu zorlama. Kilo önerisi bu hafta bir önceki seansla aynı tutulur.</div>`;
   if(b2) h+=`<div class="banner">Blok 2: amber etiketli egzersizlerde yoğunluk tekniği sadece <b>son çalışma setinden sonra</b> uygulanır.</div>`;
   D.ex.forEach((E,j)=>{
@@ -534,7 +535,8 @@ function setProg(k,v){ if(k==="day"){ S.view.pDay=v; S.view.pEx=0; } else { S.vi
 /* ============ ACTIONS ============ */
 function resetSessions(){ S.sess={}; save(); go('home'); }
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
-function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done&&!s.doneDate) s.doneDate=today(); save(); go('home'); }
+function startWorkout(i){ const s=sessData(i); s.start=Date.now(); s.durMin=null; save(); render(); }
+function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done){ if(!s.doneDate) s.doneDate=today(); if(s.start) s.durMin=Math.round((Date.now()-s.start)/60000); } save(); go('home'); }
 function cfg(k,v){ S.cfg[k]=v; save(); }
 function cfgT(day,key,v){ S.cfg.targets[day][key]=v; save(); }
 function keep(){ S.view.scroll=window.scrollY; save(); }
