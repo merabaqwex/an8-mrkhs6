@@ -345,7 +345,8 @@ function session(i){
     <details><summary>Not ${b2&&E.tech?"· teknik":""}</summary><p>${esc(E.note)}</p>${b2&&E.tech?`<p style="color:var(--amber)">${esc(E.tech)}: ${esc(TECH_EXPL[E.tech]||"")}</p>`:""}</details></div>`;
   });
   h+=`<div class="donebox ${sd.done?"on":""}"><label>Antrenman tarihi (sen gir)</label><input type="date" value="${esc(sd.doneDate||"")}" onchange="sessData(${i}).doneDate=this.value;save()">
-  <div style="height:10px"></div><button class="btn full ${sd.done?"":"gr"}" onclick="toggleDone(${i})">${sd.done?"Tamamlandı ✓ (geri al)":"Antrenmanı tamamla"}</button></div></main>`;
+  <div style="height:10px"></div><button class="btn full ${sd.done?"":"gr"}" onclick="toggleDone(${i})">${sd.done?"Tamamlandı ✓ (geri al)":"Antrenmanı tamamla"}</button></div>
+  <div class="fld" style="margin-top:14px"><button class="btn rd full" onclick="if(confirm('Bu antrenmanın tüm verisi (kg, tekrar, süre, tarih) silinsin mi? Diğer antrenmanlar etkilenmez.')){resetSession(${i})}">Bu antrenmanın verisini sil</button></div></main>`;
   return h;
 }
 
@@ -541,7 +542,8 @@ function setProg(k,v){ if(k==="day"){ S.view.pDay=v; S.view.pEx=0; } else { S.vi
 function resetSessions(){ S.sess={}; save(); go('home'); }
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
 function startWorkout(i){ const s=sessData(i); s.start=Date.now(); s.durMin=null; save(); render(); }
-function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done){ if(!s.doneDate) s.doneDate=today(); if(s.start) s.durMin=Math.round((Date.now()-s.start)/60000); } save(); go('home'); }
+function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done){ if(!s.doneDate) s.doneDate=today(); if(s.start) s.durMin=Math.round((Date.now()-s.start)/60000); } else { s.doneDate=""; s.durMin=null; } save(); go('home'); }
+function resetSession(i){ delete S.sess[i]; save(); render(); }
 function cfg(k,v){ S.cfg[k]=v; save(); }
 function cfgT(day,key,v){ S.cfg.targets[day][key]=v; save(); }
 function keep(){ S.view.scroll=window.scrollY; save(); }
@@ -574,4 +576,3 @@ if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").cat
 </script>
 </body>
 </html>
-
