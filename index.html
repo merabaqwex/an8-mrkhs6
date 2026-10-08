@@ -149,11 +149,12 @@ table.rt tr:last-child td{border-bottom:0}
 // warm: Jeff's warm-up set range string; sets; range [lo,hi] or null(time); rirI=intro/deload weeks, rirN=normal; tech=block2 technique; rest seconds; type c=compound i=isolation
 const DAYS = [
  {name:"Torso A", ex:[
-  {n:"Incline DB Y-Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"30° bench'e sırtını yasla, ağırlığı Y şeklinde yukarı-dışa kaldır."},
+  {n:"DB Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,12],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Dirsek hafif bükülü, kolu yana omuz hizasına kaldır. Tepe noktada zor olan hareket (kısa kas boyu). Sallanma yok, inişi kontrol et."},
+  {n:"Cable Fly",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
+  {n:"Reverse Cable Crossover",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kabloları çaprazla (sağ el sol tarafa, sol el sağ tarafa), dirsekler hafif kilitli, arka deltoidi sıkarak dışa-geriye çek."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
   {n:"Smith Machine Behind-the-Neck Press",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:180,t:"c",note:"Dik bench, bar kafanın arkasından kulak/ense hizasına kadar iner (daha aşağı inme). Omuz mobilitesi gerekir, ağrı/sıkışma hissedersen bırak ve yerine ön press yap. Kiloyu normal ön press kilosundan belirgin düşük tut, failure için Smith emniyet pimlerini ayarla."},
   {n:"Chest-Supported DB Row",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
-  {n:"Reverse Cable Crossover",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kabloları çaprazla (sağ el sol tarafa, sol el sağ tarafa), dirsekler hafif kilitli, arka deltoidi sıkarak dışa-geriye çek."},
   {n:"DB Incline Press",a:[],warm:"2-4",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:null,rest:240,t:"c",note:"30–45° bench. Altta 1 sn dur, pec gerginliğini koru. RIR 0 = son tekrarı denemeden bırak."},
   {n:"Lat Pulldown (Wide Grip)",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
  ]},
@@ -163,14 +164,16 @@ const DAYS = [
   {n:"Overhead Cable Triceps Ext.",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
   {n:"Cable Wrist Extension",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
   {n:"Standing Calf Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
-  {n:"Bulgarian Split Squat",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:180,t:"c",note:"Arka ayak bench'te, DB veya Smith ile. 1 set = sağ + sol bacak (zayıf bacakla başla, kilo/tekrar her iki bacakta aynı). Quad vurgusu için gövdeyi dik tut ve ön ayağı bench'e çok uzak koyma; gövdeyi öne eğersen kalçaya kayar. Failure'a gideceksen Smith daha güvenli. Kg kutusuna hep aynı şekilde yaz (tek DB ya da bar yükü)."},
-  {n:"Smith Machine Romanian Deadlift",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:null,rest:150,t:"c",note:"Ayaklar barın hafif önünde, kalçayı geriye it, bar bacağa yakın iner. Omurga nötr, altta hamstringde derin esneme."},
+  {n:"Leg Extension",a:[],warm:"1-2",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
+  {n:"Lying Leg Curl",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
+  {n:"Bulgarian Split Squat",a:[],warm:"1-2",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:180,t:"c",note:"Arka ayak bench'te, DB veya Smith ile. 1 set = sağ + sol bacak (zayıf bacakla başla, kilo/tekrar her iki bacakta aynı). Quad vurgusu için gövdeyi dik tut ve ön ayağı bench'e çok uzak koyma; gövdeyi öne eğersen kalçaya kayar. Failure'a gideceksen Smith daha güvenli. Kg kutusuna hep aynı şekilde yaz (tek DB ya da bar yükü)."},
+  {n:"Smith Machine Romanian Deadlift",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:null,rest:150,t:"c",note:"Ayaklar barın hafif önünde, kalçayı geriye it, bar bacağa yakın iner. Omurga nötr, altta hamstringde derin esneme."},
   {n:"Smith Machine Hip Thrust",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:null,rest:150,t:"c",note:"Sırtını bench'e yasla, Smith barını (pedle) kalça kıvrımına oturt. Üstte kalçayı sert sık, inişi kontrol et."},
  ]},
  {name:"Torso B", ex:[
   {n:"High-Cable Lateral Raise",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
   {n:"Straight-Arm Pulldown",a:[],warm:"0-1",sets:2,r:[10,12],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, dirsekleri kırmadan kafa üstünden kalçaya doğru yay çiz. Lat'lerde derin gerilme hisset."},
-  {n:"Cable Fly",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
+  {n:"Cable Fly",a:[],warm:"0-1",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
   {n:"Face Pull",a:[],warm:"0-1",sets:1,r:[10,12],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"İp/çift tutamaç kullan, yüz hizasına doğru çek, dirsekleri yüksek tut, üstte arka delt ve rotator cuff'ı sık."},
   {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
@@ -183,9 +186,11 @@ const DAYS = [
   {n:"Cable Triceps Kickback",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Üst kol tüm ROM boyunca gövdenin arkasında."},
   {n:"Preacher Hammer Curl",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Preacher (scott) sehpasına yasla, nötr (şakül) tutuş. Sehpa omuz yardımını keser, brakiyalis/ön kol dış kısmı izole olur."},
   {n:"Triceps Pressdown",a:[],warm:"0-1",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Dirsekleri sabit tut, sadece ön koldan hareket et."},
-  {n:"Leg Extension",a:[],warm:"1-2",sets:3,r:[8,10],rirI:[0,0,0],rirN:[0,0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
-  {n:"Lying Leg Curl",a:[],warm:"1-2",sets:3,r:[6,8],rirI:[0,0,0],rirN:[0,0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
+  {n:"Leg Extension",a:[],warm:"1-2",sets:2,r:[8,10],rirI:[0,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
+  {n:"Lying Leg Curl",a:[],warm:"1-2",sets:2,r:[6,8],rirI:[0,0],rirN:[0,0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
   {n:"Glute Kickback",a:[],warm:"0-1",sets:1,r:[10,12],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Üstte 1 sn sık, belini yuvarlamadan sadece kalçadan it."},
+  {n:"Bulgarian Split Squat",a:[],warm:"1-2",sets:1,r:[8,10],rirI:[0],rirN:[0],tech:null,rest:180,t:"c",note:"Arka ayak bench'te, DB veya Smith ile. 1 set = sağ + sol bacak (zayıf bacakla başla, kilo/tekrar her iki bacakta aynı). Quad vurgusu için gövdeyi dik tut ve ön ayağı bench'e çok uzak koyma; gövdeyi öne eğersen kalçaya kayar. Failure'a gideceksen Smith daha güvenli. Kg kutusuna hep aynı şekilde yaz (tek DB ya da bar yükü)."},
+  {n:"Smith Machine Romanian Deadlift",a:[],warm:"1-2",sets:1,r:[6,8],rirI:[0],rirN:[0],tech:null,rest:150,t:"c",note:"Ayaklar barın hafif önünde, kalçayı geriye it, bar bacağa yakın iner. Omurga nötr, altta hamstringde derin esneme."},
  ]},
 ];
 // warm-up set count as Baran decided
