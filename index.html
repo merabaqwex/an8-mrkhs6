@@ -150,8 +150,8 @@ table.rt tr:last-child td{border-bottom:0}
 const DAYS = [
  {name:"Torso A", ex:[
   {n:"High-Cable Lateral Raise",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Makara en altta/kalça hizasında, kabloya yan dur, uzak kolla çek. Alttan başlayınca da gerilim var (uzun kas boyu). Bilek cuff'ı kullanabilirsin. Dirsek hafif bükülü, omuz hizasına kadar kaldır, sallanma yok. Her iki kolda aynı tekrar, zayıf kolla başla."},
-  {n:"Single Arm Pec Deck",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
-  {n:"Reverse Single Arm Pec Deck",a:[],cuff:1,warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kabloları çaprazla (sağ el sol tarafa, sol el sağ tarafa), dirsekler hafif kilitli, arka deltoidi sıkarak dışa-geriye çek."},
+  {n:"Cable Fly",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
+  {n:"Reverse Cable Crossover",a:[],cuff:1,warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kabloları çaprazla (sağ el sol tarafa, sol el sağ tarafa), dirsekler hafif kilitli, arka deltoidi sıkarak dışa-geriye çek."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
   {n:"Smith Machine Behind-the-Neck Press",a:[],warm:"1-2",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:180,t:"c",note:"Dik bench, bar kafanın arkasından kulak/ense hizasına kadar iner (daha aşağı inme). Omuz mobilitesi gerekir, ağrı/sıkışma hissedersen bırak ve yerine ön press yap. Kiloyu normal ön press kilosundan belirgin düşük tut, failure için Smith emniyet pimlerini ayarla."},
   {n:"Chest-Supported DB Row",a:[],warm:"1-2",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:"2 Drop Set (~%25)",rest:150,t:"c",note:"Dirsekleri ~45° aç, üstte kürek kemiklerini sert sık."},
@@ -162,18 +162,18 @@ const DAYS = [
   {n:"Bayesian Cable Curl",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Alçak makara, makaraya sırtını dön, bir adım öne çık; kol gövdenin arkasında başlar (long head'de derin esneme), kablo sayesinde tüm ROM boyunca gerginlik kesilmez."},
   {n:"Cable Wrist Curl",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Akıcı, kontrollü tekrarlar."},
   {n:"Single-Arm Overhead Cable Triceps Ext.",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
-  {n:"Single-Arm Cable Curl",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Bench 45-60° eğimde, kollar gövdenin arkasında sarkar. Altta derin esneme, sallanma yok."},
+  {n:"Incline DB Curl",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Bench 45-60° eğimde, kollar gövdenin arkasında sarkar. Altta derin esneme, sallanma yok."},
   {n:"Single-Arm Triceps Pressdown",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"TEK KOL. Tek tutamak/halatla, üst kol gövdenin yanında-önünde sabit, sadece ön koldan hareket et. Her iki kolda aynı tekrar, zayıf kolla başla."},
   {n:"Lying Leg Curl",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
   {n:"Leg Extension",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
   {n:"Standing Calf Raise",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Altta 1-2 sn dur, bileği ileri-geri yuvarla."},
   {n:"Smith Machine Hip Thrust",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:150,t:"c",note:"Sırtını bench'e yasla, Smith barını (pedle) kalça kıvrımına oturt. Üstte kalçayı sert sık, inişi kontrol et."},
-  {n:"Single Leg Press",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:180,t:"c",note:"Arka ayak bench'te, DB veya Smith ile. 1 set = sağ + sol bacak (zayıf bacakla başla, kilo/tekrar her iki bacakta aynı). Quad vurgusu için gövdeyi dik tut ve ön ayağı bench'e çok uzak koyma; gövdeyi öne eğersen kalçaya kayar. Failure'a gideceksen Smith daha güvenli. Kg kutusuna hep aynı şekilde yaz (tek DB ya da bar yükü)."},
+  {n:"Bulgarian Split Squat",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:180,t:"c",note:"Arka ayak bench'te, DB veya Smith ile. 1 set = sağ + sol bacak (zayıf bacakla başla, kilo/tekrar her iki bacakta aynı). Quad vurgusu için gövdeyi dik tut ve ön ayağı bench'e çok uzak koyma; gövdeyi öne eğersen kalçaya kayar. Failure'a gideceksen Smith daha güvenli. Kg kutusuna hep aynı şekilde yaz (tek DB ya da bar yükü)."},
  ]},
  {name:"Torso B", ex:[
   {n:"High-Cable Lateral Raise",a:[],cuff:1,warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Kablo kalça hizasında. Altta elini orta hattı hafif geçir, derin esneme."},
   {n:"Straight-Arm Pulldown",a:[],warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, dirsekleri kırmadan kafa üstünden kalçaya doğru yay çiz. Lat'lerde derin gerilme hisset."},
-  {n:"Single Arm Pec Deck",a:[],cuff:1,warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
+  {n:"Cable Fly",a:[],cuff:1,warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
   {n:"Single-Arm High Pulldown",a:[],cuff:1,warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:120,t:"c",note:"Tek kolla yüksek makaradan, kol gövdenin önünde başlayıp yanına/arkaya doğru iner (sagittal düzlemde extension). Gövdeyi sabit tut, kürek kemiğini aşağı çek, lat'ta sık."},
   {n:"Face Pull",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"İp/çift tutamaç kullan, yüz hizasına doğru çek, dirsekleri yüksek tut, üstte arka delt ve rotator cuff'ı sık."},
   {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
@@ -377,8 +377,8 @@ function settings(){
   <p class="sm">Günlük sayfasındaki "Antrenman yaptım" kutusu o günün hangi hedef setine göre değerlendirileceğini belirler. Protein sabit tutulur, sadece karbonhidrat antrenman/dinlenme gününe göre değişir — yağ oranın netleşince (bel/fotoğraf ilerledikçe) bu hedefleri buradan güncelleyebilirsin.</p></div>
 
   <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="csvSess()">Antrenman CSV</button><button class="btn" onclick="csvLog()">Günlük CSV</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
-  <div class="fld"><label>Yeni döngü</label><button class="btn" onclick="if(confirm('Her gün tipi (Torso A, Limbs A, Torso B, Limbs B) için EN SON kaydın korunup 1. haftaya taşınsın, geri kalan antrenman geçmişi silinsin mi? Beslenme, kilo ve bel günlüğün korunur. Önce JSON yedek almanı öneririz.')){lastWeekToStart()}">Son haftayı başa taşı</button>
-  <p class="sm">Her gün tipi için en son yaptığın antrenman Hafta 1'e taşınır (kg, tekrar, tarih, süre), diğer seanslar silinir. Sonraki antrenmanlar Hafta 2'den devam eder ve öneriler bu kayıtlara göre çıkar.</p></div>
+  <div class="fld"><details><summary style="cursor:pointer;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em">Gelişmiş</summary><div style="margin-top:10px"><button class="btn" onclick="if(confirm('Her gün tipi (Torso A, Limbs A, Torso B, Limbs B) için EN SON kaydın korunup 1. haftaya taşınsın, geri kalan antrenman geçmişi silinsin mi? Beslenme, kilo ve bel günlüğün korunur. Önce JSON yedek almanı öneririz.')){lastWeekToStart()}">Son haftayı başa taşı</button>
+  <p class="sm">Her gün tipi için en son yaptığın antrenman Hafta 1'e taşınır (kg, tekrar, tarih, süre), diğer seanslar silinir. Sonraki antrenmanlar Hafta 2'den devam eder ve öneriler bu kayıtlara göre çıkar.</p></div></details></div>
   <div class="fld"><label>Sadece Antrenman Geçmişi</label><button class="btn" onclick="if(confirm('Sadece antrenman/set geçmişi silinsin mi? Beslenme, kilo ve bel günlüğün korunur.')){resetSessions()}">Antrenman geçmişini sıfırla</button>
   <p class="sm">Program değiştiğinde (örn. yeni bir split'e geçince) eski egzersizlerin verisi yeni slotlarla yanlış eşleşmesin diye kullan. Önce Ayarlar'dan "Antrenman CSV" ile yedek almanı öneririz.</p></div>
   <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();ensureCfg();go('home')}">Her şeyi sıfırla</button></div>
@@ -523,7 +523,11 @@ function progress(){
     const v=parseFloat(kg); if(isNaN(v)) return;
     pts.push({session:s.i+1, kg:v, reps:ed.sets[0].reps});
   });
+  const mode=S.view.pMode||"ex";
   let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>İlerleme</h1><button class="ib" onclick="M.open()">☰</button></div><main>
+  <div class="fld"><label>Grafik</label><select onchange="S.view.pMode=this.value;save();render()"><option value="ex" ${mode==="ex"?"selected":""}>Hareket ilerlemesi</option><option value="kg" ${mode==="kg"?"selected":""}>Vücut ağırlığı (kg)</option><option value="waist" ${mode==="waist"?"selected":""}>Bel ölçüsü (cm)</option></select></div>`;
+  if(mode!=="ex") return h+`<div class="fld">${lineSVG(logPts(mode),mode==="kg"?"var(--amber)":"#4aa3df",mode==="kg"?"kg":"cm")}</div></main>`;
+  h+=`
   <div class="fld"><label>Antrenman Günü</label><select onchange="setProg('day',+this.value)">${DAYS.map((dd,ix)=>`<option value="${ix}" ${ix===dayIdx?"selected":""}>${esc(dd.name)}</option>`).join("")}</select></div>
   <div class="fld"><label>Hareket</label><select onchange="setProg('ex',+this.value)">${D.ex.map((ee,ix)=>`<option value="${ix}" ${ix===exIdx?"selected":""}>${esc(ee.n)}</option>`).join("")}</select></div>`;
   if(!pts.length){
@@ -540,6 +544,28 @@ function setProg(k,v){ if(k==="day"){ S.view.pDay=v; S.view.pEx=0; } else { S.vi
 
 /* ============ ACTIONS ============ */
 function resetSessions(){ S.sess={}; save(); go('home'); }
+function lineSVG(pts,col,unit){
+  if(!pts.length) return `<p class="sm">Henüz veri yok.</p>`;
+  const W=320,H=150,padL=36,padR=10,padT=12,padB=22;
+  const t0=new Date(pts[0].d).getTime(), t1=new Date(pts[pts.length-1].d).getTime();
+  const ys=pts.map(p=>p.v); let yMin=Math.min(...ys), yMax=Math.max(...ys);
+  if(yMin===yMax){yMin-=1;yMax+=1;} const pad=(yMax-yMin)*.15; yMin-=pad; yMax+=pad;
+  const x=p=>padL+(t1===t0?(W-padL-padR)/2:((new Date(p.d).getTime()-t0)/(t1-t0))*(W-padL-padR));
+  const y=v=>padT+(1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
+  const line=pts.map((p,k)=>`${k?"L":"M"}${x(p).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ");
+  const dots=pts.length<=60?pts.map(p=>`<circle cx="${x(p).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3" style="fill:${col}"/>`).join(""):"";
+  const last=pts[pts.length-1], first=pts[0];
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+  <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" style="stroke:var(--line)"/>
+  <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" style="stroke:var(--line)"/>
+  <text x="${padL-4}" y="${(y(yMax)+3).toFixed(1)}" font-size="9" style="fill:var(--mute)" text-anchor="end">${yMax.toFixed(1)}</text>
+  <text x="${padL-4}" y="${(y(yMin)+3).toFixed(1)}" font-size="9" style="fill:var(--mute)" text-anchor="end">${yMin.toFixed(1)}</text>
+  <text x="${padL}" y="${H-6}" font-size="9" style="fill:var(--mute)">${fmt(first.d)}</text>
+  <text x="${W-padR}" y="${H-6}" font-size="9" style="fill:var(--mute)" text-anchor="end">${fmt(last.d)}</text>
+  <path d="${line}" fill="none" style="stroke:${col}" stroke-width="2" stroke-linejoin="round"/>${dots}</svg>
+  <p class="sm" style="margin-top:6px">Son: <b>${last.v} ${unit}</b>${pts.length>1?` · değişim: ${(last.v-first.v>0?"+":"")+(last.v-first.v).toFixed(1)} ${unit}`:""}</p>`;
+}
+const logPts=f=>Object.keys(S.log||{}).filter(d=>S.log[d][f]!==""&&S.log[d][f]!=null&&!isNaN(parseFloat(S.log[d][f]))).sort().map(d=>({d,v:parseFloat(S.log[d][f])}));
 function lastWeekToStart(){
   const pick={};
   for(const k of Object.keys(S.sess)){ const x=+k, d=S.sess[x]; if(!d) continue;
