@@ -176,7 +176,7 @@ const DAYS = [
   {n:"Cable Fly",a:[],cuff:1,warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Hafif öne eğil, kabloları göğüs hizasında birleştir, altta derin esneme hisset."},
   {n:"Single-Arm High Pulldown",a:[],cuff:1,warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:120,t:"c",note:"Tek kolla yüksek makaradan, kol gövdenin önünde başlayıp yanına/arkaya doğru iner (sagittal düzlemde extension). Gövdeyi sabit tut, kürek kemiğini aşağı çek, lat'ta sık."},
   {n:"Face Pull",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"İp/çift tutamaç kullan, yüz hizasına doğru çek, dirsekleri yüksek tut, üstte arka delt ve rotator cuff'ı sık."},
-  {n:"Smith Machine Kelso Shrug",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
+  {n:"Smith Machine Shrug",a:[],warm:"1-2",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Kulaklara doğru omuz silk. Mümkünse strap."},
   {n:"Cable Crunch",a:[],warm:"0-1",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
   {n:"Machine Chest Press",a:[],warm:"2-4",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:"Static Hold 30 sn",rest:240,t:"c",note:"Altta 1 sn dur, pec gerginliğini koru."},
   {n:"1-Arm Cable Row",a:[],cuff:1,warm:"1-2",sets:2,r:[5,8],rirI:[0,0],rirN:[0,0],tech:null,rest:150,t:"c",note:"Tek kolla çek, gövdeyi sabit tut, üstte kürek kemiğini sık. Sağ-sol dengesizliğini takip et."},
@@ -303,7 +303,7 @@ function home(){
   let lastW=null;
   for(const s of sched){
     const key=s.week;
-    if(key!==lastW){ lastW=key; h+=`<div class="weekh"><span><b>Hafta ${s.week}</b></span>${s.pw===1?'<span class="tag">Intro</span>':s.pw===7?'<span class="tag">Deload</span>':s.pw>=8?'<span class="tag">Blok 2 · teknikler</span>':''}</div>`; }
+    if(key!==lastW){ lastW=key; h+=`<div class="weekh"><span><b>Hafta ${s.week}</b></span></div>`; }
     const d=S.sess[s.i]||{};
     h+=`<div class="row ${d.done?"done":""}" onclick="go('sess',${s.i})"><div class="chk">${d.done?"✓":""}</div><div class="nm"><div class="t">${esc(DAYS[s.day].name)}</div><div class="d">#${s.i+1}${d.doneDate?` · <span class="${d.done?"ok":""}">${fmt(d.doneDate)}</span>`:""}${d.durMin!=null?` · ${d.durMin} dk`:""}</div></div><div class="arrow">›</div></div>`;
   }
@@ -312,11 +312,9 @@ function home(){
 
 function session(i){
   const s=schedule()[i]; if(!s){S.view.page="home";return home();}
-  const D=DAYS[s.day], sd=sessData(i), light=isLight(s.pw), b2=s.pw>=8;
+  const D=DAYS[s.day], sd=sessData(i), light=false, b2=false;
   let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>${esc(D.name)}<span class="sub">#${i+1} · Hafta ${s.week}${sd.durMin!=null?` · ${sd.durMin} dk sürdü`:""}</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   h+=`<div class="hint" style="margin-bottom:10px">${sd.start?`<span class="k">Başlangıç</span>${new Date(sd.start).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}<button class="btn" style="margin-left:10px;padding:4px 10px;font-size:12px" onclick="startWorkout(${i})">Yeniden başlat</button>`:`<button class="btn full" onclick="startWorkout(${i})">▶ Antrenmana Başla</button>`}</div>`;
-  if(light) h+=`<div class="banner">${s.pw===1?"Intro":"Deload"} haftası: Kiloyu zorlama. Kilo önerisi bu hafta bir önceki seansla aynı tutulur.</div>`;
-  if(b2) h+=`<div class="banner">Blok 2: amber etiketli egzersizlerde yoğunluk tekniği sadece <b>son çalışma setinden sonra</b> uygulanır.</div>`;
   D.ex.forEach((E,j)=>{
     const d=exData(i,j,E);
     const rir=light?E.rirI:E.rirN;
@@ -354,12 +352,12 @@ function settings(){
   const c=S.cfg; 
   return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Ayarlar</h1><button class="ib" onclick="M.open()">☰</button></div><main>
   <div class="fld"><label>Kaç hafta listelensin</label><input type="number" value="${c.weeks}" onchange="cfg('weeks',Math.max(1,+this.value));render()">
-  <p class="sm">Her hafta 4 antrenman: Torso A → Limbs A → Torso B → Limbs B. 12 haftadan sonra RIR/teknik düzeni baştan başlar (H13 = intro gibi), numaralar düz devam eder. Tarihleri antrenman günü kendin girersin.</p>
+  <p class="sm">Her hafta 4 antrenman: Torso A → Limbs A → Torso B → Limbs B. Intro/deload/blok yok, düz devam. Tarihleri antrenman günü kendin girersin.</p>
   <p class="sm" style="white-space:pre-line">${esc(LAYOUT)}</p></div>
   <div class="fld"><label>Kilo artışı – bileşik (kg)</label><input type="number" step="0.5" value="${c.incC}" onchange="cfg('incC',+this.value)"></div>
   <div class="fld"><label>Kilo artışı – izolasyon (kg)</label><input type="number" step="0.5" value="${c.incI}" onchange="cfg('incI',+this.value)"></div>
   <div class="fld"><label>Isınma kilolarını yuvarla (kg)</label><input type="number" step="0.5" value="${c.round}" onchange="cfg('round',+this.value)"></div>
-  <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Hafif haftalarda (H1, H7) artış önerilmez. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
+  <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı (Jeff): tüm çalışma setleri aralığın üst sınırına ulaştıysa kilo artar; aksi halde aynı kilo. Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
 
   <div class="weekh"><span><b>Beslenme Hedefleri</b></span></div>
   <div class="fld"><label>Antrenman Günü</label>
@@ -379,6 +377,8 @@ function settings(){
   <p class="sm">Günlük sayfasındaki "Antrenman yaptım" kutusu o günün hangi hedef setine göre değerlendirileceğini belirler. Protein sabit tutulur, sadece karbonhidrat antrenman/dinlenme gününe göre değişir — yağ oranın netleşince (bel/fotoğraf ilerledikçe) bu hedefleri buradan güncelleyebilirsin.</p></div>
 
   <div class="fld"><label>Yedek</label><div style="display:flex;gap:8px"><button class="btn" onclick="exportJ()">Dışa aktar</button><button class="btn" onclick="$('#imp').click()">İçe aktar</button></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" onclick="csvSess()">Antrenman CSV</button><button class="btn" onclick="csvLog()">Günlük CSV</button><input id="imp" type="file" accept=".json" class="hid" onchange="importJ(this)"></div></div>
+  <div class="fld"><label>Yeni döngü</label><button class="btn" onclick="if(confirm('Her gün tipi (Torso A, Limbs A, Torso B, Limbs B) için EN SON kaydın korunup 1. haftaya taşınsın, geri kalan antrenman geçmişi silinsin mi? Beslenme, kilo ve bel günlüğün korunur. Önce JSON yedek almanı öneririz.')){lastWeekToStart()}">Son haftayı başa taşı</button>
+  <p class="sm">Her gün tipi için en son yaptığın antrenman Hafta 1'e taşınır (kg, tekrar, tarih, süre), diğer seanslar silinir. Sonraki antrenmanlar Hafta 2'den devam eder ve öneriler bu kayıtlara göre çıkar.</p></div>
   <div class="fld"><label>Sadece Antrenman Geçmişi</label><button class="btn" onclick="if(confirm('Sadece antrenman/set geçmişi silinsin mi? Beslenme, kilo ve bel günlüğün korunur.')){resetSessions()}">Antrenman geçmişini sıfırla</button>
   <p class="sm">Program değiştiğinde (örn. yeni bir split'e geçince) eski egzersizlerin verisi yeni slotlarla yanlış eşleşmesin diye kullan. Önce Ayarlar'dan "Antrenman CSV" ile yedek almanı öneririz.</p></div>
   <div class="fld"><button class="btn rd" onclick="if(confirm('Tüm veriler silinsin mi?')){localStorage.removeItem(KEY);S=load();ensureCfg();go('home')}">Her şeyi sıfırla</button></div>
@@ -540,6 +540,13 @@ function setProg(k,v){ if(k==="day"){ S.view.pDay=v; S.view.pEx=0; } else { S.vi
 
 /* ============ ACTIONS ============ */
 function resetSessions(){ S.sess={}; save(); go('home'); }
+function lastWeekToStart(){
+  const pick={};
+  for(const k of Object.keys(S.sess)){ const x=+k, d=S.sess[x]; if(!d) continue;
+    const has = d.done || Object.values(d.ex||{}).some(e=>(e.sets||[]).some(st=>st.kg!==""||st.reps!==""));
+    if(!has) continue; const day=x%4; if(!(day in pick) || x>pick[day]) pick[day]=x; }
+  const ns={}; for(const day of Object.keys(pick)) ns[day]=S.sess[pick[day]];
+  S.sess=ns; save(); go('home'); }
 function setv(i,j,k,f,v){ exData(i,j,DAYS[i%4].ex[j]).sets[k][f]=v; keep(); render(); }
 function startWorkout(i){ const s=sessData(i); s.start=Date.now(); s.durMin=null; save(); render(); }
 function toggleDone(i){ const s=sessData(i); s.done=!s.done; if(s.done){ if(!s.doneDate) s.doneDate=today(); if(s.start) s.durMin=Math.round((Date.now()-s.start)/60000); } else { s.doneDate=""; s.durMin=null; } save(); go('home'); }
