@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#111317">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
-<meta name="apple-mobile-web-app-title" content="FBEOD">
-<title>FBEOD</title>
+<meta name="apple-mobile-web-app-title" content="Min-Max">
+<title>Min-Max</title>
 <style>
 :root{
   --bg:#111317; --card:#1b1f26; --card2:#232830; --line:#2e343d;
@@ -276,7 +276,7 @@ const M={ open(){ $("#menu").classList.add("on"); }, close(){ $("#menu").classLi
 function home(){
   const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
   const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
-  let h=`<div class="top"><h1>FBEOD<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
+  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
   <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
   h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
@@ -416,54 +416,61 @@ function logsup(d,k){ const e=logent(d); e.sup=e.sup||{}; e.sup[k]=!e.sup[k]; sa
 
 /* ============ KURALLAR ============ */
 function rules(){
+  const sec=(t,body)=>`<div class="weekh"><span><b>${t}</b></span></div><div class="ex">${body}</div>`;
+  const p=(t,last)=>`<p style="margin:0 0 ${last?0:6}px">${t}</p>`;
   return `<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Kurallar</h1><button class="ib" onclick="M.open()">☰</button></div><main>
 
-  <div class="weekh"><span><b>Strateji — Skinny Fat / Recomp</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 8px">Düşük kas kütlesi + yüksek karın yağı kombinasyonu. Çözüm ne agresif bulk ne agresif cut — <b>recomp</b>: küçük kalori açığı + yüksek protein + progresif ağırlık antrenmanı, aynı anda.</p>
-  <p style="margin:0">Bu faz (Faz 1) genelde <b>3-5 ay</b> sürer. Aceleye getirme, sadece aylık değerlendirmeyle ilerlet.</p>
-  </div>
+  ${sec("Antrenman Düzeni",
+   p("Haftada <b>3-3,5 antrenman</b>: ya bir gün arayla full body, ya da haftada 3 full body + arada çift dinlenme günü.")+
+   p("Daha sık salona gitmek istersen upper/lower veya anterior/posterior (haftada 6 gün) olur. Hiç dinlenme günü olmadan her gün antrenman önerilmez.")+
+   p("<b>Hacim:</b> kas başına haftada <b>3-12 set</b>. Bu programda her bölgeye seans başına 1 set, haftada 3-4 seans.")+
+   p("<b>Yoğunluk:</b> setleri 0-1 tekrar depoda (RIR) bitir. 1 RIR bırakmak güç ilerlemesi için ideal, ama büyük fark yaratmaz. Bu programda hedef RIR 0.")+
+   p("<b>Tekrar aralığı:</b> 5-8. Daha geniş aralık gerekirse 4-12.")+
+   p("<b>Dinlenme:</b> set arası 2-3 dk. Aynı kası art arda çalıştırıyorsan ve performansı korumak istiyorsan 3-5 dk'ya kadar uzat.")+
+   p("<b>Isınma:</b> performans için gerektiği kadar. 1 set veya 1 tekrarlık ısınma bile yeter, gerekmiyorsa hiç yapma.",1))}
 
-  <div class="weekh"><span><b>Kalori & Makro Mantığı</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 6px"><b>Antrenman günü:</b> karbonhidrat daha yüksek — glikojen antrenman performansını doğrudan besler.</p>
-  <p style="margin:0 0 6px"><b>Dinlenme günü:</b> karbonhidrat ~%20 daha düşük — o gün ekstra yakıta ihtiyaç yok, fazlası yağ olarak birikir.</p>
-  <p style="margin:0">Protein ve yağ her gün sabit kalır, sadece karbonhidrat oynar. Hedefleri Ayarlar sayfasından değiştirebilirsin.</p>
-  </div>
+  ${sec("Hareket Seçimi — Bölgesel Mantık",
+   p("Hedef: önem verdiğin her kasın <b>tüm eklem hareketlerini</b> çalıştırmak ve <b>her bölgeyi ayrı biaslamak</b>. Her bölge için bir hareket seç.")+
+   p("<b>Üst göğüs</b> (köprücük kemiği başı): omuz fleksiyonuna karşı zorluk gerekir. Front raise veya low-to-high kablo fly gibi tek eklemli hareketler tercih edilir. Press yapacaksan: <b>30° incline</b> (Smith machine veya barbell), <b>dar tutuş</b> (omuz genişliği), bar dirseklerin tam üstünde (kollar gövdeye yakın, tucked yol). Yük omuz hizasının altında en ağır olsun. Nötr tutuşlu göğüs veya omuz press'i de olur, omuz press'te kalçayı öne kaydırıp 90°'nin altında çalış.")+
+   p("<b>Orta göğüs:</b> geniş pozisyondan dara gelen her hareket (pec deck, kablo fly, geniş press). Ana işlevi yatay omuz fleksiyonu.")+
+   p("<b>Alt göğüs:</b> üst yarı pullover (kol başın üstünden omuz hizasına iner), veya kolun gövdeye yapışık adduksiyonu.")+
+   p("<b>Omuz:</b> ön delt için üst yarı press (sagittal veya frontal düzlem) veya front raise. Yan delt için herhangi bir lateral raise, yük omuz hizasının altında en ağır olsun. Arka delt için ayrı izolasyon şart değil, çekiş hareketleri zaten çalıştırır.")+
+   p("<b>Trap:</b> üst için shrug veya lateral raise, orta için göğüs destekli yatay shrug (Kelso), alt için yukarı rotasyonlu Y hareketi.")+
+   p("<b>Sırt (lat):</b> iki bölge. Frontal düzlem: geniş pulldown. Sagittal düzlem: dar pulldown, row veya pullover. Her lat hareketinde kürek kemiğini aşağı çek (depresyon), sadece kolla çekme.")+
+   p("<b>Biceps / dirsek fleksörleri:</b> incline kablo curl (biceps), preacher (brachialis), üst yarı reverse curl (brachioradialis), istersen supinasyon. Hepsinde yük uzamış pozisyonda en ağır olsun.")+
+   p("<b>Triceps:</b> kablo pushdown, overhead extension, üst yarı pullover.")+
+   p("<b>Quad:</b> leg extension (rectus femoris), bent-knee kalça fleksiyonu (rectus proksimal), squat paterni (vastus kasları).")+
+   p("<b>Hamstring:</b> lying leg curl, seated leg curl, hinge. Seated'i lying'den önce yap, aksi halde seated'te ağırlık ciddi düşer. Hinge'de (SLDL veya 45° hip extension) diz hizasında dur (30-70° kalça fleksiyonu), yere indirme.")+
+   p("<b>Glute:</b> kısalmış pozisyon için hip thrust (üstte omuz-kalça-diz düz çizgi), hinge, üst glute için abduction. <b>Adductor:</b> SLDL veya squat paterni, makine adduktor.")+
+   p("<b>Baldır:</b> ayaklar içe (lateral gastro), dışa (medial gastro), seated (soleus). <b>Karın:</b> üst için crunch, alt için spinal fleksiyonlu leg raise. <b>Boyun:</b> fleksiyon ve ekstansiyon öncelikli. <b>Ön kol:</b> bilek fleksiyonu ve ekstansiyonu, parmak fleksiyonu.")+
+   p("Tek eklemli hareket genelde tercih edilir, ama gerekirse bileşik hareket de sorun değil. Farklar marjinal: sürdürebileceğin ve ilerletebileceğin hareketi seç.",1))}
 
-  <div class="weekh"><span><b>Bel Ölçümü</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 6px">En kalın noktadan ölç — göbek deliği zorunlu değil. Senin için alt karın bölgesiyse orası referans noktan.</p>
-  <p style="margin:0 0 6px">Kritik kural: <b>her zaman aynı noktadan</b> ölç. İlk ölçtüğünde o noktayı not al ve her ay oradan ölç.</p>
-  <p style="margin:0">Sabah aç karnına, ayakta, mezura yere paralel, karın çekilmeden — ayda 1 kez yeterli, daha sık ölçüm su tutmasından yanıltır.</p>
-  </div>
+  ${sec("Sıralama ve Bloklar",
+   p("En çok büyütmek istediğin kasları ve gönüllü aktivasyon eksikliği olan kasları seansın başına koy, taze oldukları zaman çalışsınlar.")+
+   p("Çok kas kütlesi ve kalp yükü gerektiren hareketler (squat, hinge) seansın sonunda yapılır.")+
+   p("<b>Bloklar:</b> a ve b hareketini sırayla birer set yap (a, dinlen, b, dinlen). Aynı bloktaki hareketler farklı kasları çalıştırdığı için biri dinlenirken diğeri çalışır.",1))}
 
-  <div class="weekh"><span><b>Değerlendirme Kuralları</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 8px">Ayda 1-2 kez değerlendir. Tek haftaya göre karar verme — trend en az 2-3 hafta aynı yöne gitmeli.</p>
-  <table class="rt">
-   <tr><th>Haftalık trend</th><th>Anlamı</th><th>Aksiyon</th></tr>
-   <tr><td>Tartı & bel sabit</td><td>Açık yok</td><td>−100/−150 kcal</td></tr>
-   <tr><td>0,2-0,4 kg/hafta düşüş</td><td>Hedef bölge</td><td>Dokunma</td></tr>
-   <tr><td>0,5+ kg/hafta düşüş</td><td>Açık çok derin</td><td>+100/+200 kcal</td></tr>
-   <tr><td>Tartı yükseliyor</td><td>Fazla kalori</td><td>−100/−200 kcal</td></tr>
-  </table>
-  <p style="margin:8px 0 0">Ayarlama karbonhidrattan yapılır, protein asla kısılmaz.</p>
-  </div>
+  ${sec("Progresif Yüklenme (Double Progression)",
+   p("Kiloyu ancak tekrar aralığının <b>üst sınırına</b> ulaştığında artır. Alt sınırın altında kalıyorsan kiloyu artırma.")+
+   p("<b>İki seans kuralı:</b> üst sınıra ulaştığında hemen artırma, aynı kiloda üst sınırı art arda 2 seans yap, sonra küçük bir artış yap. Böylece yeni kiloyu hak etmiş olursun ve teknik bozulmaz.")+
+   p("Artış küçük olsun (mikro yük: yarım kilo, 1 kg, plaka eklemek). Büyük sıçrama tekrarı 3'e düşürür. Mikro yük yoksa alt sınırın biraz üstünde kal, aralığı genişlet.")+
+   p("Kilo sadece hedef tekrar aralığında hedef zorluğa ulaşmanı sağlayan bir araçtır. Set hâlâ zorsa kiloyu artırmak zorunda değilsin.")+
+   p("Grinder tekrarları ve ego lifting yok: negatifi 2-3 sn kontrol et, gerilmiş pozisyonda yarım-1 sn dur, sonra it. Kaldıramadığın yüke kendini zorlama, formu 10 üzerinden en az 7 tut.")+
+   p("Tek bir sette tekrarı kaçırırsan ya da form bozulursa kiloyu 2,5 kg kadar düşür, yeniden üst sınıra çık. Uygulama öneriyi bu kurala göre verir.",1))}
 
-  <div class="weekh"><span><b>Faz 2'ye Geçiş</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 6px">Hedef nokta sabit: <b>~%15 civarı</b> (düşük-orta yağ sınırı) — başlangıç yüzden %20, %25 veya %30 olsun fark etmez, oransal bir düşüş değil. Nereden başlarsan başla varış noktası aynı, sadece yol uzunluğu değişir.</p>
-  <p style="margin:0 0 6px">Başlangıcın <b>%25'in üzerindeyse</b>, kitap daha büyük bir açık öneriyor: standart %10-20 yerine <b>%20-30</b>. Yakılacak yağ deposu fazla olduğu için kas kaybı riski düşükken süreci hızlandırabilirsin — Ayarlar'dan kalori hedeflerini buna göre biraz daha kısabilirsin.</p>
-  <p style="margin:0">Kesin ölçüm (kaliper/BIA/DEXA) yoksa yüzdeyi izlemeye çalışma — bel çevresi ilk ölçümden <b>4-6 cm+</b> düşmüş, karın hafif seçilmeye başlamış ve fotoğrafta net fark varsa, o bölgeye gelmişsindir demektir. Üçü birlikte gerçekleştiğinde geç. O noktada kalori bakıma çıkar, karbonhidrat oranı yükselir — hedefleri yeniden hesaplat.</p>
-  </div>
+  ${sec("Beslenme ve Yaşam",
+   p("<b>Kalori:</b> idame. Muhtemelen sandığından fazla yağın var.")+
+   p("<b>Protein:</b> vücut ağırlığının pound başına 0,8-1 g (kg başına yaklaşık 1,8-2,2 g).")+
+   p("<b>Yağ:</b> pound başına 0,3-0,5 g (kg başına yaklaşık 0,7-1,1 g). Kalan kalori karbonhidrattan gelir.")+
+   p("<b>Antrenman öncesi:</b> 30-50 g basit karbonhidrat atıştırması. İstersen antrenman sırasında 30-50 g karbonhidratlı içecek (Gatorade, meyve suyu, dekstroz, maltodekstrin, cluster dextrin).")+
+   p("<b>Kafein:</b> vücut ağırlığının kg başına 3-6 mg, antrenmandan 30-60 dk önce.")+
+   p("<b>Uyku:</b> gece 7-9 saat.")+
+   p("<b>Stres:</b> dış stres kaynaklarına dikkat et, bir stres yönetim sistemin olsun (kortizolü düşür).",1))}
 
-  <div class="weekh"><span><b>Diğer Kritik Noktalar</b></span></div>
-  <div class="ex">
-  <p style="margin:0 0 6px"><b>Uyku:</b> 7,5-8 saat hedefle. Uyku kısıldığında kaybedilen kilonun büyük kısmı yağ değil, kastan gider.</p>
-  <p style="margin:0 0 6px"><b>Kardiyo:</b> futbol zaten sayılıyor, ekstra haftada 1-2× 30 dk düşük tempo yeterli. HIIT'e gerek yok.</p>
-  <p style="margin:0">Tartı günlük değil <b>haftalık ortalama</b> ile değerlendirilir — tuz, glikojen, su tutması günlük 1-2 kg oynatabilir, tek günü yorumlama.</p>
-  </div>
+  ${sec("Bel Ölçümü",
+   p("En kalın noktadan ölç — göbek deliği zorunlu değil. Senin için alt karın bölgesiyse orası referans noktan.")+
+   p("Kritik kural: <b>her zaman aynı noktadan</b> ölç. İlk ölçtüğünde o noktayı not al ve her seferinde oradan ölç.")+
+   p("Sabah aç karnına, ayakta, mezura yere paralel, karın çekilmeden. Tartıyı da günlük değil haftalık ortalamayla değerlendir: tuz, glikojen ve su tutması günlük 1-2 kg oynatabilir.",1))}
   </main>`;
 }
 
