@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#111317">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
-<meta name="apple-mobile-web-app-title" content="Min-Max">
-<title>Min-Max</title>
+<meta name="apple-mobile-web-app-title" content="FBEOD">
+<title>FBEOD</title>
 <style>
 :root{
   --bg:#111317; --card:#1b1f26; --card2:#232830; --line:#2e343d;
@@ -276,7 +276,7 @@ const M={ open(){ $("#menu").classList.add("on"); }, close(){ $("#menu").classLi
 function home(){
   const sched=schedule(); const done=sched.filter(s=>S.sess[s.i]&&S.sess[s.i].done).length;
   const next=sched.find(s=>!(S.sess[s.i]&&S.sess[s.i].done));
-  let h=`<div class="top"><h1>Min-Max<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
+  let h=`<div class="top"><h1>FBEOD<span class="sub">${sched.length} antrenman · ${S.cfg.weeks} hafta</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   h+=`<div class="stat"><div><div class="n">${done}<span style="color:var(--mute);font-size:14px">/${sched.length}</span></div><div class="l">Tamamlanan</div><div class="bar"><i style="width:${sched.length?done/sched.length*100:0}%"></i></div></div>
   <div onclick="${next?`go('sess',${next.i})`:""}"><div class="n">${next?esc(DAYS[next.day].name):"—"}</div><div class="l">Sıradaki · #${next?next.i+1:""}</div></div></div>`;
   h+=`<details class="banner" style="border-color:var(--line)"><summary>Haftalık düzen önerisi</summary><p style="white-space:pre-line">${esc(LAYOUT)}</p></details>`;
