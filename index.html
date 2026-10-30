@@ -166,6 +166,8 @@ const DAYS = [
  {n:"Cable Crunch",blk:"8b",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
  {n:"Neck Extension",blk:"9a",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Boyun ekstansiyonu: hafif yükle (plate/harness/makine), yavaş ve kontrollü. Ani hareket yok, tam ROM, boynu zorlama (ağrı varsa bırak)."},
  {n:"Neck Flexion",blk:"9b",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Boyun fleksiyonu: hafif yükle (plate/harness/makine), çeneyi göğse doğru yavaş çek. Ani hareket yok, tam ROM, ağrı varsa bırak."},
+ {n:"Cable Wrist Curl",blk:"10a",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Ön kol fleksörleri: ön kolu bench veya dize yasla, bilek avuç yukarı. Akıcı ve kontrollü, altta tam esneme, üstte sık."},
+ {n:"Cable Wrist Extension",blk:"10b",a:[],warm:"0-1",sets:1,r:[5,8],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Ön kol ekstansörleri: ön kolu yasla, bilek avuç aşağı. Akıcı ve kontrollü, altta tam esneme, üstte sık."},
  ]},
 ];
 // warm-up set count as Baran decided
@@ -237,6 +239,11 @@ function suggest(i,j,k,E){
   }
   if(!hist.length) return null;
   const last=hist[0], prev=hist[1], top=E.r[1], inc = E.t==="c"?S.cfg.incC:S.cfg.incI;
+  if(last.reps<E.r[0]){
+    // aralığın altında kaldıysa: bir basamak düşür (videodaki küçük reset mantığı)
+    const nk=Math.max(0,roundTo(last.kg-inc,S.cfg.round||0.5));
+    return {kg:nk, why:`Geçen seans ${last.kg} kg × ${last.reps} – ${E.r[0]} tekrarın altında kaldın, ${inc} kg düşür ve ${top} tekrara çık`, prev:last.kg, prevReps:last.reps};
+  }
   if(last.reps>=top){
     // videodaki kural: üst sınırda art arda 2 seans kal, sonra yük artır
     if(prev && prev.reps>=top && prev.kg===last.kg) return {kg:last.kg+inc, why:`2 seans üst üste ${last.kg} kg × ${last.reps} – hak ettin, +${inc} kg`, prev:last.kg, prevReps:last.reps};
@@ -444,6 +451,17 @@ function rules(){
    p("<b>Baldır:</b> ayaklar içe (lateral gastro), dışa (medial gastro), seated (soleus). <b>Karın:</b> üst için crunch, alt için spinal fleksiyonlu leg raise. <b>Boyun:</b> fleksiyon ve ekstansiyon öncelikli. <b>Ön kol:</b> bilek fleksiyonu ve ekstansiyonu, parmak fleksiyonu.")+
    p("Tek eklemli hareket genelde tercih edilir, ama gerekirse bileşik hareket de sorun değil. Farklar marjinal: sürdürebileceğin ve ilerletebileceğin hareketi seç.",1))}
 
+  ${sec("Açılar ve Ayarlar",
+   p("<b>Seated Smith Machine Shoulder Press:</b> sırt yaslama açısı yaklaşık <b>85°</b> (hafif geriye yaslı, tam dik değil). Bar alnın biraz önünden iner, dirsekler en az 90° kırılır. <i>Not: bu genel pratik, kesin bir çalışmayla doğrulanmadı. 80-90° arası rahat ve omuzda ağrı yapmayan açıyı kullan.</i>")+
+   p("<b>Seated Smith Machine Incline Press:</b> bench <b>30°</b>, omuz genişliğinde (dar) tutuş, bar dirseklerin tam üstünde. (Videodaki öneri.)")+
+   p("<b>Preacher Curl:</b> sehpa açısı yaklaşık <b>60°</b> (senin ayarın). Daha dik sehpa zorluğu alt (uzamış) kısma kaydırır, videodaki \"uzamış pozisyonda en ağır olsun\" mantığına uyar.")+
+   p("<b>Dumbbell Pullover:</b> düz bench (<b>0°</b>), omuzlar bench'te, kalça hafif aşağıda. Kollar başın üstünde başlar.")+
+   p("<b>Lat Pulldown (Wide Grip):</b> gövde dik veya hafif geriye (yaklaşık 10-15°), uyluk pedi sıkı. Kürek kemiklerini aşağı çek.")+
+   p("<b>Seated Cable Row (Narrow Grip):</b> gövde dik (yaklaşık 90°), sallanma yok, kürek kemiklerini aşağı-geriye çek.")+
+   p("<b>Seated Hip Abduction (Leaning Forward):</b> gövdeyi öne eğ (kalça fleksiyonda). Net bir açı değeri veremiyorum, glute'da en çok hissettiğin eğimi bul ve her seans aynısını kullan.")+
+   p("<b>Bayesian Cable Curl:</b> makara en altta, makaraya sırtını dön, kol gövdenin arkasında başlar (uzamış pozisyon).")+
+   p("Kural: bulduğun açı ve koltuk ayarını bir kez not al, her seans aynısını kullan. Ayar değişirse kg geçmişi karşılaştırılamaz.",1))}
+
   ${sec("Sıralama ve Bloklar",
    p("En çok büyütmek istediğin kasları ve gönüllü aktivasyon eksikliği olan kasları seansın başına koy, taze oldukları zaman çalışsınlar.")+
    p("Çok kas kütlesi ve kalp yükü gerektiren hareketler (squat, hinge) seansın sonunda yapılır.")+
@@ -455,7 +473,7 @@ function rules(){
    p("Artış küçük olsun (mikro yük: yarım kilo, 1 kg, plaka eklemek). Büyük sıçrama tekrarı 3'e düşürür. Mikro yük yoksa alt sınırın biraz üstünde kal, aralığı genişlet.")+
    p("Kilo sadece hedef tekrar aralığında hedef zorluğa ulaşmanı sağlayan bir araçtır. Set hâlâ zorsa kiloyu artırmak zorunda değilsin.")+
    p("Grinder tekrarları ve ego lifting yok: negatifi 2-3 sn kontrol et, gerilmiş pozisyonda yarım-1 sn dur, sonra it. Kaldıramadığın yüke kendini zorlama, formu 10 üzerinden en az 7 tut.")+
-   p("Tek bir sette tekrarı kaçırırsan ya da form bozulursa kiloyu 2,5 kg kadar düşür, yeniden üst sınıra çık. Uygulama öneriyi bu kurala göre verir.",1))}
+   p("Alt sınırın altında kalırsan ya da form bozulursa kiloyu bir basamak düşür (2,5 kg gibi), yeniden üst sınıra çık. Uygulama öneriyi bu kurala göre verir. Mikro yük yoksa düşük kiloda aralığın üstünde tekrar yap, sonra artır.",1))}
 
   ${sec("Beslenme ve Yaşam",
    p("<b>Kalori:</b> idame. Muhtemelen sandığından fazla yağın var.")+
