@@ -149,7 +149,6 @@ table.rt tr:last-child td{border-bottom:0}
   <div class="panel">
     <div class="item" onclick="M.go('home')">🏠 Antrenmanlar</div>
     <div class="item" onclick="M.go('diet')">🎯 Diyet</div>
-    <div class="item" onclick="M.go('log')">📋 Günlük</div>
     <div class="item" onclick="M.go('progress')">📈 İlerleme</div>
     <div class="item" onclick="M.go('rules')">ⓘ Kurallar</div>
     <div class="item" onclick="M.go('set')">⚙︎ Ayarlar</div>
@@ -469,20 +468,18 @@ function session(i){
 
 /* ============ DİYET SAYFASI ============ */
 function diet(){
-  const td=today(), adj=S.cfg.kcalAdj||0, e=(S.log||{})[td]||{};
+  const td=today(), adj=S.cfg.kcalAdj||0, ld=S.view.dd||td, e=(S.log||{})[ld]||{};
   const ph=dPhase(td) || (td<DIET.start?DIET.phases[0]:null);
   const st=dStatus(), dc=dDecide(st), inPlan=td>=DIET.start&&td<=DIET.end;
   let h=`<div class="top"><button class="ib" onclick="go('home')">‹</button><h1>Diyet<span class="sub">${ph?esc(ph.name):"Plan bitti"}${inPlan?` · Hafta ${Math.floor(dDiff(DIET.start,td)/7)+1}/32`:""}</span></h1><button class="ib" onclick="M.open()">☰</button></div><main>`;
   h+=dRem().map(r=>`<div class="note ${r.cls}">${esc(r.t)}</div>`).join("");
 
   // giriş
-  h+=`<div class="weekh"><span><b>Bugün</b></span><span class="tag">${fmt(td)}</span></div>
-  <div class="tgrid"><div><span>Kilo (kg)</span><input type="number" inputmode="decimal" step="0.1" value="${esc(e.kg??"")}" onchange="logset('${td}','kg',this.value)"></div>
-  <div><span>Bel (cm) · ${WD[S.cfg.waistDay]}</span><input type="number" inputmode="decimal" step="0.5" value="${esc(e.waist??"")}" onchange="logset('${td}','waist',this.value)"></div></div>`;
-
-  // takviye
-  const sp=e.sup||{}, nSup=SUPS.filter(([k])=>sp[k]).length;
-  h+=`<div class="weekh"><span><b>Takviyeler</b></span><span class="tag">${nSup}/${SUPS.length}</span></div><div class="cbs">${SUPS.map(([k,l])=>`<label class="cb ${sp[k]?"on":""}" onclick="logsup('${td}','${k}')"><span class="sq">${sp[k]?"✓":""}</span>${l}</label>`).join("")}</div>`;
+  h+=`<div class="weekh"><span><b>${ld===td?"Bugün":"Geçmiş gün"}</b></span>${ld!==td?`<span class="tag" onclick="S.view.dd='';save();render()">Bugüne dön</span>`:""}</div>
+  <div class="fld" style="margin-bottom:8px"><input type="date" value="${ld}" max="${td}" onchange="S.view.dd=this.value;save();render()"></div>
+  <div class="tgrid"><div><span>Kilo (kg)</span><input type="number" inputmode="decimal" step="0.1" value="${esc(e.kg??"")}" onchange="logset('${ld}','kg',this.value)"></div>
+  <div><span>Bel (cm) · ${WD[S.cfg.waistDay]}</span><input type="number" inputmode="decimal" step="0.5" value="${esc(e.waist??"")}" onchange="logset('${ld}','waist',this.value)"></div></div>
+  <p class="sm" style="margin-top:6px">Bel: sabah, aç karnına, tuvaletten sonra, ayakta, nefes verirken, hep aynı noktadan (en kalın yer, senin için alt karın).</p>`;
 
   // hedef
   if(ph){
@@ -523,6 +520,15 @@ function diet(){
 
   // fazlar
   h+=`<div class="weekh"><span><b>Fazlar</b></span></div><table class="rt"><tr><th>Faz</th><th>Tarih</th><th>kcal</th><th>P/Y/K</th></tr>${DIET.phases.map(p=>`<tr style="${p===ph?"color:var(--amber)":""}"><td>${esc(p.name)}</td><td>${fs(p.from)} – ${fs(p.to)}</td><td>${p.kcal}</td><td>${p.p}/${p.f}/${p.c}</td></tr>`).join("")}</table>`;
+
+  // takviye (seçili gün)
+  const sp=e.sup||{}, nSup=SUPS.filter(([k])=>sp[k]).length;
+  h+=`<div class="weekh"><span><b>Takviyeler</b> · ${ld===td?"bugün":fs(ld)}</span><span class="tag">${nSup}/${SUPS.length}</span></div><div class="cbs">${SUPS.map(([k,l])=>`<label class="cb ${sp[k]?"on":""}" onclick="logsup('${ld}','${k}')"><span class="sq">${sp[k]?"✓":""}</span>${l}</label>`).join("")}</div>`;
+
+  // geçmiş kayıtlar
+  const dates=Object.keys(S.log||{}).filter(x=>{const r=S.log[x]; return (r.kg!==""&&r.kg!=null)||(r.waist!==""&&r.waist!=null)||(r.sup&&Object.values(r.sup).some(Boolean));}).sort().reverse();
+  h+=`<details style="margin-top:14px"><summary>Geçmiş kayıtlar (${dates.length}) — düzeltmek için dokun</summary><div style="margin-top:8px">${dates.map(x=>{ const r=S.log[x]; const sup=SUPS.filter(([k])=>r.sup&&r.sup[k]).map(([k,l])=>l.split(" ")[0]).join(" · ");
+    return `<div class="row" onclick="S.view.dd='${x}';save();render()"><div class="nm"><div class="t">${fmt(x)}${r.kg!==""&&r.kg!=null?` · <span style="color:var(--amber)">${r.kg} kg</span>`:""}${r.waist!==""&&r.waist!=null?` · <span style="color:var(--blue)">${r.waist} cm</span>`:""}</div><div class="d">${sup}</div></div><div class="arrow">›</div></div>`; }).join("")||`<p class="sm">Henüz kayıt yok.</p>`}</div></details>`;
   return h+`</main>`;
 }
 function dietChart(){
