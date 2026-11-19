@@ -265,7 +265,7 @@ const roundTo = (x,q)=>Math.round(x/q)*q;
 function suggest(i,j,k,E){
   if(!E.r) return null;
   const sched = schedule(), hist=[];
-  for(let x=i-1;x>=0 && hist.length<2;x--){
+  for(let x=i-1;x>=0 && hist.length<3;x--){
     const sx=sched[x]; if(!sx || sx.day!==i%DAYS.length) continue;
     const d=S.sess[x]&&S.sess[x].ex[E.n]; if(!d) continue;
     const st=d.sets[k]; if(!st||st.kg===""||st.reps==="") continue;
@@ -273,16 +273,16 @@ function suggest(i,j,k,E){
     hist.push({kg,reps});
   }
   if(!hist.length) return null;
-  const last=hist[0], prev=hist[1], top=E.r[1], inc = E.t==="c"?S.cfg.incC:S.cfg.incI;
+  const last=hist[0], prev=hist[1], prev2=hist[2], top=E.r[1], inc = E.t==="c"?S.cfg.incC:S.cfg.incI;
   if(last.reps<E.r[0]){
     // aralığın altında kaldıysa: bir basamak düşür (videodaki küçük reset mantığı)
     const nk=Math.max(0,roundTo(last.kg-inc,S.cfg.round||0.5));
     return {kg:nk, why:`Geçen seans ${last.kg} kg × ${last.reps} – ${E.r[0]} tekrarın altında kaldın, ${inc} kg düşür ve ${top} tekrara çık`, prev:last.kg, prevReps:last.reps};
   }
   if(last.reps>=top){
-    // videodaki kural: üst sınırda art arda 2 seans kal, sonra yük artır
-    if(prev && prev.reps>=top && prev.kg===last.kg) return {kg:last.kg+inc, why:`2 seans üst üste ${last.kg} kg × ${last.reps} – hak ettin, +${inc} kg`, prev:last.kg, prevReps:last.reps};
-    return {kg:last.kg, why:`Geçen seans ${last.reps} tekrar (üst sınır) – bir seans daha aynı kiloda ${top} tekrar yap, sonra artır`, prev:last.kg, prevReps:last.reps};
+    // videodaki kural: üst sınıra ilk ulaşma + 2 seans daha aynı kiloda (toplam 3 seans), sonra yük artır
+    if(prev && prev2 && prev.reps>=top && prev.kg===last.kg && prev2.reps>=top && prev2.kg===last.kg) return {kg:last.kg+inc, why:`3 seans üst üste ${last.kg} kg × ${top} – hak ettin, +${inc} kg`, prev:last.kg, prevReps:last.reps};
+    return {kg:last.kg, why:`Geçen seans ${last.reps} tekrar (üst sınır) – aynı kiloda ${top} tekrarı toplam 3 seans tutturunca artır (${prev&&prev.reps>=top&&prev.kg===last.kg?2:1}/3 tamam)`, prev:last.kg, prevReps:last.reps};
   }
   return {kg:last.kg, why:`Geçen seans ${last.kg} kg × ${last.reps} – aynı kiloyla ${top} tekrarı hedefle`, prev:last.kg, prevReps:last.reps};
 }
@@ -569,7 +569,7 @@ function settings(){
   <div class="fld"><label>Kilo artışı – bileşik (kg)</label><input type="number" step="0.5" value="${c.incC}" onchange="cfg('incC',+this.value)"></div>
   <div class="fld"><label>Kilo artışı – izolasyon (kg)</label><input type="number" step="0.5" value="${c.incI}" onchange="cfg('incI',+this.value)"></div>
   <div class="fld"><label>Isınma kilolarını yuvarla (kg)</label><input type="number" step="0.5" value="${c.round}" onchange="cfg('round',+this.value)"></div>
-  <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı: bir hareketi üst tekrar sınırında art arda 2 seans yaparsan kilo artar; aksi halde aynı kilo (teknik bozulmasın diye). Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
+  <p class="sm">JSON = tam yedek (içe aktarılabilir). CSV = Excel'de açmak için.</p><p class="sm">Öneri kuralı: bir hareketi üst tekrar sınırına ilk ulaştıktan sonra aynı kiloda 2 seans daha (toplam 3 seans) üstte kalırsan kilo artar; aksi halde aynı kilo (teknik bozulmasın diye). Öneri sadece yer tutucu olarak görünür, istediğin kiloyu girebilirsin.</p>
 
   <div class="weekh"><span><b>Diyet</b></span></div>
   <div class="fld"><label>Bel ölçüm günü</label><div class="days">${[1,2,3,4,5,6,0].map(k=>`<button class="${c.waistDay===k?"on":""}" onclick="cfg('waistDay',${k});render()">${WDS[k]}</button>`).join("")}</div></div>
