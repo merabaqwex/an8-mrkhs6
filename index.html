@@ -159,25 +159,27 @@ table.rt tr:last-child td{border-bottom:0}
 // warm: Jeff's warm-up set range string; sets; range [lo,hi] or null(time); rirI=intro/deload weeks, rirN=normal; tech=block2 technique; rest seconds; type c=compound i=isolation
 const DAYS = [
  {name:"Full", ex:[
- {n:"Cable Crunch",blk:"1",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
- {n:"Seated Smith Machine Shoulder Press",ang:"85° sırt",blk:"2a",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:240,t:"c",note:"Ön delt: yükün en ağır olduğu bölge omuz hizasının altında olsun (koltukta kalçayı biraz öne kaydır, 90° altı). Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
- {n:"Incline DB Curl",ang:"50° bench",blk:"2b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Bench 50°, kollar gövdenin arkasında aşağı sarkar (uzamış pozisyon). Dirsekler sabit, omuz öne kaymasın. Altta tam esneme, kontrollü kaldır."},
- {n:"High-Cable Lateral Raise",blk:"3a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Makara en altta/kalça hizasında, kabloya yan dur, uzak kolla çek. Alttan başlayınca da gerilim var (uzun kas boyu). Bilek cuff'ı kullanabilirsin. Dirsek hafif bükülü, omuz hizasına kadar kaldır, sallanma yok. Her iki kolda aynı tekrar, zayıf kolla başla."},
- {n:"Preacher Curl",ang:"60° sehpa",blk:"3b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Preacher (scott) sehpasına yasla, supine (avuç yukarı) tutuş, kontrollü tekrar. Sehpa sayesinde drop set'te de form bozulmaz."},
- {n:"Seated Smith Machine Incline Press",ang:"30° bench",blk:"4a",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:240,t:"c",note:"Üst göğüs: bench 30°, omuz genişliğinde (dar) tutuş, bar dirseklerin tam üstünde. Tucked kol yolu, altta 1 sn dur, kontrollü it."},
- {n:"Lat Pulldown (Wide Grip)",ang:"gövde 10-15° geri",blk:"4b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:150,t:"c",note:"Negatifi kontrol et, latlerin açıldığını hisset. Tam ROM!"},
- {n:"Single-Arm Overhead Cable Triceps Ext.",blk:"5a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
- {n:"Seated Cable Row (Narrow Grip)",ang:"gövde 90° dik",blk:"5b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:150,t:"c",note:"Dar tutuş (V-handle), gövde sabit. Kürek kemiklerini aşağı-geriye çek, dirsekleri gövdeye yakın tut, üstte sık, geri dönüşte lat'ı uzat. Sallanma yok."},
- {n:"Single-Arm Triceps Pressdown",blk:"6a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"TEK KOL. Tek tutamak/halatla, üst kol gövdenin yanında-önünde sabit, sadece ön koldan hareket et. Her iki kolda aynı tekrar, zayıf kolla başla."},
- {n:"Leg Extension",blk:"6b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
- {n:"Pec Deck",blk:"7a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Sırtını yasla, dirsekler göğüs hizasında. Açılırken pec'te derin esneme, kapanırken göğsü sık."},
- {n:"Lying Leg Curl",blk:"7b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
- {n:"Dumbbell Pullover",ang:"0° düz bench",blk:"8",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:120,t:"i",note:"Bench'e sırtüstü, tek dumbbell iki elle. Kollar başın üstünde (180°) başlar, omuz hizasına kadar in-çık. Üst yarı hareket: alt göğüs + triceps uzun baş. Dirsekler hafif bükülü, sabit."},
- {n:"Seated Hip Abduction (Leaning Forward)",ang:"gövde öne eğik",blk:"9",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Makinede otur, gövdeni öne eğ (kalça fleksiyonda): üst glute max ve glute medius. Yavaş aç, dışta 1 sn sık, kontrollü kapat."},
- {n:"Neck Extension",blk:"10a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Boyun ekstansiyonu: hafif yükle (plate/harness/makine), yavaş ve kontrollü. Ani hareket yok, tam ROM, boynu zorlama (ağrı varsa bırak)."},
- {n:"Neck Flexion",blk:"10b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Boyun fleksiyonu: hafif yükle (plate/harness/makine), çeneyi göğse doğru yavaş çek. Ani hareket yok, tam ROM, ağrı varsa bırak."},
- {n:"Cable Wrist Curl",blk:"11a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Ön kol fleksörleri: ön kolu bench veya dize yasla, bilek avuç yukarı. Akıcı ve kontrollü, altta tam esneme, üstte sık."},
- {n:"Cable Reverse Curl",blk:"11b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[0],rirN:[0],tech:null,rest:90,t:"i",note:"Üst yarı reverse curl (brachioradialis): pronasyon (avuç aşağı) tutuşla, dirsek kıvrımının üst yarısında çalış, bilekler düz."},
+ {n:"Cable Crunch",blk:"1",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Crunch yaparken belini yuvarla, karınla zihin-kas bağlantısı."},
+ {n:"Seated Smith Machine Shoulder Press",ang:"85° sırt",blk:"2a",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:240,t:"c",note:"Ön delt: yükün en ağır olduğu bölge omuz hizasının altında olsun (koltukta kalçayı biraz öne kaydır, 90° altı). Sırtın dik, dirsekler en az 90° kırılsın. Smith'in sabit yörüngesi güvenli overload sağlar, tam kilitlemeden kontrollü indir."},
+ {n:"Incline DB Curl",ds:1,ang:"50° bench",blk:"2b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Bench 50°, kollar gövdenin arkasında aşağı sarkar (uzamış pozisyon). Dirsekler sabit, omuz öne kaymasın. Altta tam esneme, kontrollü kaldır."},
+ {n:"High-Cable Lateral Raise",blk:"3a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Makara en altta/kalça hizasında, kabloya yan dur, uzak kolla çek. Alttan başlayınca da gerilim var (uzun kas boyu). Bilek cuff'ı kullanabilirsin. Dirsek hafif bükülü, omuz hizasına kadar kaldır, sallanma yok. Her iki kolda aynı tekrar, zayıf kolla başla."},
+ {n:"Preacher Curl",ds:1,ang:"60° sehpa",blk:"3b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:"2 Drop Set (~%25)",rest:90,t:"i",note:"Preacher (scott) sehpasına yasla, supine (avuç yukarı) tutuş, kontrollü tekrar. Sehpa sayesinde drop set'te de form bozulmaz."},
+ {n:"Seated Smith Machine Incline Press",ang:"30° bench",blk:"4a",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:240,t:"c",note:"Üst göğüs: bench 30°, omuz genişliğinde (dar) tutuş, bar dirseklerin tam üstünde. Tucked kol yolu, altta 1 sn dur, kontrollü it."},
+ {n:"Keenan Flap (Frontal Pullover)",blk:"4b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Kablo flap: kollar yana açık, omuz hizasından başla, dirsekler hafif bükük. Kolu gövdeye doğru çek (shoulder adduction), en altta kol gövdeye yapışık ve sıkıştırılmış olsun. Skapulayı aşağı bastır. Yük en çok kol gövdeye yakınken olsun. İlk haftalar hafif başla (pec gerginliği riski)."},
+ {n:"Single-Arm Overhead Cable Triceps Ext.",ds:1,blk:"5a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Negatif boyunca triceps'te derin esneme."},
+ {n:"Straight-Arm Cable Pullover (Sagittal)",ang:"gövde hafif öne eğik",blk:"5b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Lat için sagittal düzlem (shoulder extension). Yüksek makara, kollar düz/hafif bükük, başın üstünden başla, kolu kalçaya doğru çek. Skapulayı aşağı bastır (depression), belini yuvarlama. Altta lat'ı sık, kontrollü geri çık."},
+ {n:"Single-Arm Triceps Pressdown",ds:1,blk:"6a",a:[],cuff:1,warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"TEK KOL. Tek tutamak/halatla, üst kol gövdenin yanında-önünde sabit, sadece ön koldan hareket et. Her iki kolda aynı tekrar, zayıf kolla başla."},
+ {n:"Leg Extension",ds:1,blk:"6b",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:"Lengthened Partials",rest:90,t:"i",note:"Koltuğu geriye al, tutamakları kavrayıp kalçanı koltuğa bastır."},
+ {n:"Pec Deck",blk:"7a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Sırtını yasla, dirsekler göğüs hizasında. Açılırken pec'te derin esneme, kapanırken göğsü sık."},
+ {n:"Single-Arm Reverse Pec Deck",blk:"7b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Tek kol, göğüs destekli. Dirsek hafif bükük, kolu yana aç, kürek kemiklerini aşırı sıkıştırma; omuz arkasında hisset. Kontrollü dön."},
+ {n:"Lying Leg Curl",blk:"8a",a:[],warm:"1-2",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:"Lengthened Partials",rest:90,t:"i",note:"Makineyi altta en büyük esnemeyi alacak şekilde ayarla. Kalçanın kalkmasına izin verme."},
+ {n:"Dumbbell Pullover",ang:"0° düz bench",blk:"8b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:120,t:"i",note:"Bench'e sırtüstü, tek dumbbell iki elle. Kollar başın üstünde (180°) başlar, omuz hizasına kadar in-çık. Üst yarı hareket: alt göğüs + triceps uzun baş. Dirsekler hafif bükülü, sabit."},
+ {n:"Kelso Shrug (Chest-Supported)",ang:"göğüs destekli, yüzüstü",blk:"9a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Orta trapez ve rhomboid için yatay shrug. Göğsün destekli bench'te, kollar aşağı sarkar. Dirsekleri bükmeden sadece kürek kemiklerini birbirine yaklaştır, üstte sık, kontrollü indir. Omuzları kulağa kaldırma."},
+ {n:"Seated Hip Abduction (Leaning Forward)",ang:"gövde öne eğik",blk:"9b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Makinede otur, gövdeni öne eğ (kalça fleksiyonda): üst glute max ve glute medius. Yavaş aç, dışta 1 sn sık, kontrollü kapat."},
+ {n:"Neck Extension",blk:"10a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Boyun ekstansiyonu: hafif yükle (plate/harness/makine), yavaş ve kontrollü. Ani hareket yok, tam ROM, boynu zorlama (ağrı varsa bırak)."},
+ {n:"Neck Flexion",blk:"10b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Boyun fleksiyonu: hafif yükle (plate/harness/makine), çeneyi göğse doğru yavaş çek. Ani hareket yok, tam ROM, ağrı varsa bırak."},
+ {n:"Cable Wrist Curl",blk:"11a",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Ön kol fleksörleri: ön kolu bench veya dize yasla, bilek avuç yukarı. Akıcı ve kontrollü, altta tam esneme, üstte sık."},
+ {n:"Cable Reverse Curl",blk:"11b",a:[],warm:"0-1",sets:1,r:[5,9],rirI:[1],rirN:[1],tech:null,rest:90,t:"i",note:"Üst yarı reverse curl (brachioradialis): pronasyon (avuç aşağı) tutuşla, dirsek kıvrımının üst yarısında çalış, bilekler düz."},
  ]},
 ];
 // warm-up set count as Baran decided
@@ -250,8 +252,7 @@ function schedule(){
   for(let i=0;i<n;i++) out.push({i, day:i%DAYS.length, week:Math.floor(i/PER_WEEK)+1, pw:1});
   return out;
 }
-const LAYOUT=`Full body: seçili kas bölgeleri için 1 hareket, 1 set, 5-9 tekrar, RIR 0. Bir gün arayla, haftada 3-4 kez.
-Bloklar: a ve b hareketini sırayla birer set yap (a, dinlen, b, dinlen). Aynı bloktaki hareketler farklı kasları çalıştırır.
+const LAYOUT=`Full body: seçili kas bölgeleri için 1 hareket, 1 set, 5-9 tekrar, RIR 1. Bir gün arayla, haftada 3-4 kez.
 Sıralama: karın (en başta), omuz, biceps, göğüs ve sırt, triceps, quad, hamstring, glute, boyun. Boyun en sonda.
 Aynı bölgeyi art arda çalıştırıyorsan 3-5 dk dinlen.`;
 const fmt = s=>{ const d=new Date(s+"T00:00:00"); return d.toLocaleDateString("tr-TR",{day:"numeric",month:"short",weekday:"short"}); };
@@ -442,22 +443,20 @@ function session(i){
     const work = d.sets[0].kg!==""?parseFloat(d.sets[0].kg):sugKg0;
     const wu=warmup(E,work);
     h+=`<div class="ex"><div class="num">Egzersiz ${j+1}</div><h2 style="font-size:20px;margin:2px 0 4px">${esc(E.n)}</h2>
-    <div class="chips">${E.blk?`<span class="chip">Blok <b>${E.blk}</b></span>`:""}${E.ang?`<span class="chip" style="border-color:var(--green);color:var(--green)">Açı <b>${esc(E.ang)}</b></span>`:""}<span class="chip">Isınma <b>${wu.n} set</b></span><span class="chip">Çalışma <b>${E.sets} set</b></span><span class="chip">Tekrar <b>${E.r?E.r.join("–"):"süre"}</b></span><span class="chip">Dinlenme <b>${E.rest/60} dk</b></span>${E.cuff?`<span class="chip" style="border-color:var(--amber);color:var(--amber)">Cuff</span>`:""}${b2&&E.tech?`<span class="chip tech">${esc(E.tech)}</span>`:""}</div>`;
+    <div class="chips">${E.ang?`<span class="chip" style="border-color:var(--green);color:var(--green)">Açı <b>${esc(E.ang)}</b></span>`:""}<span class="chip">Tekrar <b>${E.r?E.r.join("–"):"süre"}</b></span>${E.ds?`<span class="chip" style="border-color:var(--blue);color:var(--blue)">Deadstop</span>`:""}${E.cuff?`<span class="chip" style="border-color:var(--amber);color:var(--amber)">Cuff</span>`:""}${b2&&E.tech?`<span class="chip tech">${esc(E.tech)}</span>`:""}</div>`;
     if(E.r && sugs.some(sg=>sg)) h+=`<div class="hint s"><span class="k">Öneri${light?" (hafif hafta)":""} — set başına</span>${sugs.map((sg,k)=>{
       if(!sg) return `<div style="margin-top:4px;font-size:13px">Set ${k+1}: <span style="color:var(--mute)">ilk seans</span></div>`;
       const sk=light?sg.prev:sg.kg;
       return `<div style="margin-top:4px;font-size:13px">Set ${k+1}: <b style="color:var(--amber)">${sk} kg</b> <span style="color:var(--mute)">· ${esc(light?`geçen ${sg.prev} kg × ${sg.prevReps}`:sg.why)}</span></div>`;
     }).join("")}</div>`;
     else if(E.r) h+=`<div class="hint"><span class="k">Öneri</span>İlk seans – kiloyu kendin belirle, sonraki seansta öneri çıkar.</div>`;
-    if(wu.list.length) h+=`<div class="hint"><span class="k">Isınma (${work} kg üzerinden)</span><div class="wu">${wu.list.map((w,k)=>`<span>${k+1}: <b>${w.kg} kg</b> × ${w.reps}</span>`).join("")}</div></div>`;
-    else if(E.r) h+=`<div class="hint"><span class="k">Isınma</span>${wu.n} set – S1 kilosunu girince hesaplanır.</div>`;
     h+=`<div class="sets">`;
     d.sets.forEach((st,k)=>{
       const sg=sugs[k]; const sk=sg?(light?sg.prev:sg.kg):null;
       h+=`<div class="set"><div class="lab">Set<b>${k+1}</b></div><input type="number" inputmode="decimal" step="0.5" placeholder="${E.r?(sk??"kg"):"—"}" value="${esc(st.kg)}" onchange="setv(${i},${j},${k},'kg',this.value)">
       <input type="number" inputmode="numeric" placeholder="${E.r?"tekrar":"sn"}" value="${esc(st.reps)}" onchange="setv(${i},${j},${k},'reps',this.value)"><div class="rir">RIR<b>${rir[k]??"–"}</b></div></div>`;
     });
-    h+=`</div><div class="exfoot"><button class="btn am" onclick="T.start(${E.rest},'${esc(E.n)}')">▶ Dinlen ${E.rest/60} dk</button><button class="btn" onclick="T.start(60,'${esc(E.n)}')">1 dk</button></div>
+    h+=`</div>
     <details><summary>Not ${b2&&E.tech?"· teknik":""}</summary><p>${esc(E.note)}</p>${b2&&E.tech?`<p style="color:var(--amber)">${esc(E.tech)}: ${esc(TECH_EXPL[E.tech]||"")}</p>`:""}</details></div>`;
   });
   h+=`<div class="donebox ${sd.done?"on":""}"><label>Antrenman tarihi (sen gir)</label><input type="date" value="${esc(sd.doneDate||"")}" onchange="sessData(${i}).doneDate=this.value;save()">
